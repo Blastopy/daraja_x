@@ -1,0 +1,263 @@
+@import url(https://fonts.googleapis.com.css?family=Lato:400,100,300,700,900);
+@import url(https://fonts.googleapis.com.css?family=Source+Code+Pro:400,200,300,500,600);
+* {
+	box-sizing: border-box;
+}
+html, body {
+	margin: 0;
+	padding: 0;
+	background-color: white;
+	color: black;
+	position: relative;
+}
+header {
+	position: static;
+	background-color: white;
+	overflow-y: auto;
+	width: 100%;
+	left: 0px;
+	right: 0px;
+}
+.form-body {
+	color: white;
+}
+.menu {
+	float: left;
+	width: 20%;
+	text-align: center;
+}
+.menu > a {
+	background-color: rgb(7, 7, 63);
+	padding: 8px;
+	margin-top: 7px;
+	display: block;
+	width: 100%;
+	color: white;
+}
+.main {
+	width: 100%;
+	padding: 0 20px;
+}
+.right {
+	background-color: aquamarine;
+	float: left;
+	width: 20%;
+	padding: 15px;
+	margin-top: 7px;
+	text-align: center;
+}
+header > img {
+	position: relative;
+	width: 20%;
+	background-blend-mode:lighten;
+}
+.buttons > a {
+	background-color: rgb(7, 7, 63);
+	color: white;
+	margin: 10px;
+	padding: 15px;
+	border: 1px solid grey;
+	border-radius: 15px;
+}
+.buttons {
+	margin: 40px;
+	position: relative;
+	float: right;
+}
+.index-hr {
+	width: 95%;
+}
+.index-notes > i {
+	margin: 0px;
+	position: relative;
+	border-radius: 20px;
+	font-size: xx-large;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.note-1 > p{
+	position: relative;
+	border: none;
+	width: 25%;
+	padding: 40px;
+	font-size: 20px;
+	font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	background-color: rgb(52, 112, 52);
+	color: white;
+	border-radius: 20px;
+	margin: 0px;
+	top: -200px;
+	float: left;
+}
+.ditch {
+	box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.6), 0 7px 21px 0 rgba(0, 0, 0, 0.20);
+	display: inline-block;
+	border: 1px solid grey;
+	width: 350px;
+	height: 312px;
+	border-radius: 10px;
+}
+.ditch > img {
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	width: 350px;
+	height: 195px;
+	object-fit: fill;
+}
+.ditch > p {
+	background-color: rgb(7, 7, 63);
+	color: white;
+	display: inline-block;
+	text-align: center;
+	font-size: x-large;
+	margin: 0px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.ditch > button {
+	position: relative;
+	display: inline-block;
+	background-color: blue;
+	color: white;
+	padding: 10px;
+	border-radius: 10px;
+}
+.ditch > button > a {
+	color: white;
+}
+.ditch-1 {
+	background-color: rgb(7, 7, 63);
+	color: white;
+	box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.6), 0 7px 21px 0 rgba(0, 0, 0, 0.20);
+	margin: 2px;
+	border: 1px solid grey;
+	width: 350px;
+	height: 350px;
+	border-radius: 10px;
+	position: relative;
+	float: left;
+}
+.ditch-1 > img {
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	width: 350px;
+	height: 195px;
+	object-fit: fill;
+}
+.ditch-1 > p {
+	display: inline-block;
+	text-align: center;
+	font-size: x-large;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.index-notes-1 > p{
+	padding: 10px;
+	position: absolute;
+	display: inline-block;
+	font-size:xx-large;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.ditch-2 {
+	background-color: rgb(7, 7, 63);
+	color: white;
+	margin: 0px;
+	margin-top: -500px;
+	padding: 0px;
+	border: 1px solid grey;
+	width: 350px;
+	height: 350px;
+	top: 497px;
+	float: left;
+	border-radius: 10px;
+	position: relative;
+}
+.ditch-2 > img {
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	width: 350px;
+	height: 195px;
+	object-fit: fill;
+	position: relative;
+	float: right;
+}
+.ditch-2 > p {
+	position: relative;
+	display: inline-block;
+	text-align: center;
+	font-size: x-large;
+	font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+.forms{
+	background-image:linear-gradient(to right, rgb(0, 153, 255) 50%, orange 50%);
+	padding-bottom: 0px;
+	margin-bottom: 0px;
+	margin: 0px;
+	padding: 0px;
+	position: relative;
+	display:flex;
+	flex-direction: column;
+}
+form {
+	background-color: white;
+	color: black;
+	float: right;
+	margin: 20px;
+	width: 50%;
+	margin: 40px;
+	border-radius: 20px;
+}
+.form-note {
+	float: left;
+}
+fieldset {
+	box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.6), 0 7px 21px 0 rgba(0, 0, 0, 0.20);
+	border: none;
+	border-radius: 20px;
+}
+input[type="text"], input[type="email"], input[type="tel"], input[type="password"], input[type="number"] {
+	padding: 10px;
+	margin: 20px;
+	border-radius: 10px;
+	width: 50%;
+}
+-input::-webkit-outer-spin-button, -input::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+input[type="submit"] {
+	position: relative;
+	padding: 10px;
+	width: 20%;
+	background-color: green;
+	color: white;
+	font-size: larger;
+	border-radius: 10px;
+	width: 20%;
+}
+input[type="submit"]:hover {
+	color: green;
+	background-color: white;
+}
+#message {
+	display: none;
+}
+.errormessage {
+	display: contents;
+	color: red;
+	font-style: italic;
+}
+.valid {
+	color: green;
+}
+.valid:before {
+	position: relative;
+	left: -5px;
+	content: "√";
+	font-weight: bolder;
+}
+.invalid {
+	color: red;
+}
+.invalid:before {
+	position: relative;
+	left: -5px;
+	content: "Χ";
+}
