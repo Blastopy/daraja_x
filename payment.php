@@ -125,7 +125,7 @@ include 'daraja_x/stk-initiate.php';
                 <div class="info">
                     <input type="hidden" name="orderNo" value="consultation" /> <!-- For testing purposes, we have added the value. This should proceed from your website -->
                     <label for="cardnumber">Phone number</label>
-                    <input id="cardnumber" type="text" name="phone_number" maxlength="10"/>
+                    <input id="cardnumber" type="text" name="phone_number" maxlength="10" placeholder="07xxxxxxxx">
                 </div>
             </div>
         </div>
