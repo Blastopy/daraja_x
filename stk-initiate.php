@@ -1,18 +1,20 @@
 <?php
+
 $errors = array();
 $errmsg = '';
 
 if(isset($_POST['submit'])){
-  date_default_timezone_set('Africa/Nairobi');
 
+  date_default_timezone_set('Africa/Nairobi');
+  $amount = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
   # access token
-  $consumerKey = '6kq7YxghJsG2ugTBW7zl3QnVljwjR97yE8nuK82QhTpa9a0u'; //Fill with your app Consumer Key
-  $consumerSecret = 'VPU5QAL5AghIDZjW6dcLvf8yLkbzGg1nqoOaEI6c5yklzJjYAnqsZ0MZoGAUg8y2'; // Fill with your app Secret
+  $consumerKey = 'mw3tGurOnfyg9f8HseGjCoteTd9T48EXnSn2AA2tcI3F5Erb'; //Fill with your app Consumer Key
+  $consumerSecret = 'j4eKxE2WuS0dOzBx541iHEYkupYEH3D4TLPZhSdcUq6k2htBT4F4tlOHzrSGrvPs'; // Fill with your app Secret
 
   # define the variables
   # provide the following details, this part is found on your test credentials on the developer account
-  $BusinessShortCode = '';
-  $Passkey = 'lYDxNj8CTLIRM5gf2kb9n9ZZtO54WihFsFMWtu4/o0cZYsE7pxZFbWf6LNLW5NXsyQIMi3rGW1UX2Ge1dmuMVallDjIqi8m5m9GqdZDf+n+pyo/SkE55kYkP8aTvVw+B9Mh+MS4hsmgV+Ye9vwT9yL5UUYQfIIUQtHjapXGAz5yBjwPd4PvL5UDaDLmB+2TDp8yQ/lC/vWPbWaFWmFZHQ5G1qJXGV/3HAwTy4EGRPRXEtlaRt2R+ZdoZvj8Wgb8lNd4FoAdYFE7x7dAjNn3F1Kt1iwLBLf86CCeaWKBfK0yiBTHjrvrhP7PGitlmTdab9L3h/EPPWi9PrDFNwVsTFQ==';  
+  $BusinessShortCode = '6061164';
+  $Passkey = 'P6iirpmDcjhJfNia9jR4pUDRLY7Ba+i3++6CbLVljGwvpKWoVPgFywESqYYQvRdvqt5kjjCED68qpcLOBLDOCwKChppJnDxMxtLa/p8vdi6CHpWK5YrMQBmjKPzavN/n6JvvJepA39zSuN3BrWgW6hbDlY8nsXA9ZReVzF21C9VkouNXXZbdIp1o5Y4AOV5kNSyjUUgMhNzg/DP/CKwXDj7K/1Efvh4LtOFBCaFQdFh41HsIgtQj5dw79YWSA1yxAIIoi4EUjtj1oTbjQk7V+/zgOGjSVf7/IeInz4SmjekC6iK1PT/MgGLSedCKcP2iwCJH83xT+Oc8nKYwxWupMQ==';  
 
   /*
     This are your info, for
@@ -33,13 +35,13 @@ if (empty($_POST['phone_number'])){
   $PartyA = stripcslashes($_POST['phone_number']);
   $PartyA = filter_input(INPUT_POST, 'phone_number', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
   $orderNo = $_POST['orderNo'];
-  $amount = $_COOKIE['price'];
+  $amount = $amount;
   $PartyA = (substr($PartyA, 0, 1) == "+") ? str_replace("+", "", $PartyA) : $PartyA;
   $PartyA = (substr($PartyA, 0, 1) == "0") ? preg_replace("/^0/", "254", $PartyA) : $PartyA;
   $PartyA = (substr($PartyA, 0, 1) == "7") ? "254{$PartyA}" : $PartyA;
   $AccountReference = '2255';
   $TransactionDesc = 'consultation Payment';
-  $Amount = $_COOKIE['price'];
+  $Amount = $amount;
 
   # Get the timestamp, format YYYYmmddhms -> 20181004151020
   $Timestamp = date('YmdHis');
@@ -64,12 +66,11 @@ if (empty($_POST['phone_number'])){
   curl_setopt($curl, CURLOPT_USERPWD, $consumerKey.':'.$consumerSecret);
   $result = curl_exec($curl);
   $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-  $result = json_decode($result);
-  $access_token = $result->access_token;
+  $result = json_decode(json_encode(json_decode($result)), true);  $access_token = $result['access_token'];
   curl_close($curl);
 
   # header for stk push
-  $stkheader = ['Content-Type:application/json','Authorization:Bearer '.$access_token];
+  $stkheader = ['Content-Type:application/json','Authorization: Basic '.$access_token];
 
   # initiating the transaction
   $curl = curl_init();
@@ -96,8 +97,11 @@ if (empty($_POST['phone_number'])){
   curl_setopt($curl, CURLOPT_POST, true);
   curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
   $curl_response = curl_exec($curl);
-  print_r($curl_response);
+  $qurl = json_decode(json_encode(json_decode($curl_response)), true);
+  $errors['mpesastk'] = $qurl;
+        foreach($errors as $error) {
+            $errmsg = $error['errorMessage'] . '<br />';
+        }
 
-  echo $curl_response;
 }};
 ?>
