@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 					setcookie('sname', $sname, secure:true, httponly:true);
 					setcookie('email', $email, secure:true, httponly:true);
 					$_SESSION['email'] = $email;
-					header('location:adminpanel.php');
+					header('location:adminlogin.php');
 				}
 			} catch(PDOException $e){
 				$formErr = "Internal server error.";

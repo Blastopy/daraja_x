@@ -1,5 +1,6 @@
-<?php 
+<?php
 include 'includes/config.php';
+$doc_image = "";
 $ofnameErr = $osnameErr = $pnumberErr = $emailErr = $residenceErr = $facultyErr = $priceErr = $genderErr = $passwordErr = $notesErr = '';
 function test_inputs($data){
 	$data = trim($data);
@@ -48,7 +49,7 @@ function test_inputs($data){
 		}
 		if (isset($_POST['submit'])){
 			if (empty($_POST['residence'])){
-				$residenceErr = 'Please type the residence of the officer';
+				$residenceErr = 'Please type the county of residence of the officer';
 			} else {
 				$residence = test_inputs($_POST['residence']);
 				$residence = filter_input(INPUT_POST, 'residence', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -64,7 +65,7 @@ function test_inputs($data){
 		}
 		if (isset($_POST['submit'])){
 			if (empty($_POST['price'])){
-				$priceErr = 'Please type the residence of the officer';
+				$priceErr = 'Please type the charges of the officer per session';
 			} else {
 				$price = test_inputs($_POST['price']);
 				$price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -76,14 +77,6 @@ function test_inputs($data){
 				$genderErr = 'Please select the gender of the officer';
 			} else {
 				$gender = $_POST['gender'];
-			}
-		}
-		if (isset($_POST['submit'])){
-			if (empty($_POST['doctors_notes'])){
-				$notesErr = "Doctor' notes cannot be empty";
-			} else {
-				$notes = test_inputs($_POST['doctors_notes']);
-				$notes = filter_input(INPUT_POST, 'doctors_notes', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 			}
 		}
 		if (isset($_POST['submit'])){
@@ -101,8 +94,8 @@ function test_inputs($data){
 				$result = $stmt -> fetch(PDO::FETCH_ASSOC);
 				if (empty($result['email'])){
 					try{
-						$query = $conn->prepare("INSERT INTO santi_data (fname, sname, email, tel, licence, gender, residence ,faculty, doctor_notes, price, password)
-						VALUES (:fname, :sname, :email, :tel, :licence, :gender, :faculty, :residence, :doctor_notes, :price, :password)");
+						$query = $conn->prepare("INSERT INTO santi_data (fname, sname, email, tel, licence, gender, residence ,faculty, price, password)
+						VALUES (:fname, :sname, :email, :tel, :licence, :gender, :residence, :faculty, :price, :password)");
 						$query->bindParam(':fname', $ofname);
 						$query->bindParam(':sname', $osname);
 						$query->bindParam(':email', $email);
@@ -112,15 +105,16 @@ function test_inputs($data){
 						$query->bindParam(':gender', $gender);
 						$query->bindParam(':faculty', $faculty);
 						$query->bindParam(':price', $price);
-						$query->bindParam(':doctor_notes', $notes);
 						$query->bindParam(':password', $password);
 						if($query->execute() == TRUE){
 							header('location:adminpanel.php');
+							return '<div class="alert success"><span class="closebtn">Member registered succesfully</span></div>';
 						} else {
-							echo '<script>alert("Officical not registered...")</script>';
+							header('location:adminpanel.php');
+							return '<script>alert("Officical not registered...")</script>';
 						}
 					} catch(PDOException $e){
-						$formErr = "Internal server error.";
+						$ofnameErr = "Internal server error.";
 					}
 			} else {
 				$emailErr = "Email already exists";

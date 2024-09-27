@@ -1,0 +1,73 @@
+@media screen and (max-width: 950px){
+	.responsive {
+		display: block;
+		position: relative;
+		font-size: 50px;
+		background-color: aliceblue;
+	}
+	.responsive > a {
+		text-decoration: none;
+	}
+	main {
+		display: none;
+	}
+	.indexNav {
+		display: none;
+	}
+	footer {
+		display: none;
+	}
+	.loader {
+		display: none;
+	}
+}
+@media screen and (max-width: 490px){
+	.indexNav {
+		width: 100%;
+	}
+	.loader {
+		margin: 0px;
+	}
+}
+@media screen and (max-width: 400px){
+	.indexNav {
+		width: 100%;
+		height: 100px;
+	}
+	/* .indexNav > .loader-image > img {
+	
+	} */
+	.santiprofile{
+		width: 50%;
+		height: 50%;
+		width: 20px;
+		position: relative;
+		height: 10px;
+		border: 1px solid rgb(0, 108, 250);
+		border-radius: 100%;
+		height: 200px;
+		width: 200px;
+		padding: 20px;
+	}
+	.loader {
+		margin: 0px;
+	}
+}
+@media screen and (max-width: 320px){
+	.indexNav {
+		width: 100%;
+	}
+	.indexNav > .loader-image > img {
+		width: 20px;
+		position: relative;
+		height: 10px;
+		border: 1px solid rgb(0, 108, 250);
+		border-radius: 100%;
+		height: 200px;
+		width: 200px;
+		padding: 20px;
+	}
+	.loader {
+		margin: 0px;
+	}
+}

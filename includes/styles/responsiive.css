@@ -1,0 +1,113 @@
+/* Responsive CSS Here */
+@media screen and (max-width: 950px) { 
+	.responsive {
+		display: block;
+		position: relative;
+		font-size: 50px;
+		background-color: aliceblue;
+	}
+	.responsive > a {
+		text-decoration: none;
+	}
+	#main_content, #doctors-profile, #reports, #sessions, #reports, #schedules{
+		display: none;
+		background-color: aliceblue;
+	}
+	
+	header {
+		display: none;
+	}
+	.navcontainer {
+		display: none;
+	}
+	} 
+	
+	@media screen and (max-width: 850px) { 
+		.responsive {
+			display: block;
+			position: relative;
+			font-size: 50px;
+			background-color: aliceblue;
+		}
+		.responsive > a {
+			text-decoration: none;
+		}
+		#main_content {
+			display: none;
+			background-color: aliceblue;
+		}
+		header {
+			display: none;
+		}
+		.navcontainer {
+			display: none;
+		}
+	} 
+	
+	@media screen and (max-width: 490px) { 
+		.responsive {
+			display: block;
+			position: relative;
+			font-size: 50px;
+			background-color: aliceblue;
+		}
+		.responsive > a {
+			text-decoration: none;
+		}
+		#main_content {
+			display: none;
+			background-color: aliceblue;
+		}
+		header {
+			display: none;
+		}
+		.navcontainer {
+			display: none;
+		}
+}
+	
+	@media screen and (max-width: 400px) { 
+		.responsive {
+			display: block;
+			position: relative;
+			font-size: 50px;
+			background-color: aliceblue;
+		}
+		.responsive > a {
+			text-decoration: none;
+		}
+		#main_content {
+			display: none;
+			background-color: aliceblue;
+		}
+		header {
+			display: none;
+		}
+		.navcontainer {
+			display: none;
+		}
+
+	} 
+	
+	@media screen and (max-width: 320px) { 
+		.responsive {
+			display: block;
+			position: relative;
+			font-size: 50px;
+			background-color: aliceblue;
+		}
+		.responsive > a {
+			text-decoration: none;
+		}
+		#main_content {
+			display: none;
+			background-color: aliceblue;
+		}
+		header {
+			display: none;
+		}
+		.navcontainer {
+			display: none;
+		}
+	}
+	

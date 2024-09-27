@@ -1,5 +1,22 @@
-<?php session_start();
+<?php
+
+date_default_timezone_set('Africa/Nairobi');
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php';
+
+ini_set('session.cookie_lifetime', 0);
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_strict_mode', 1);
+ini_set('session.use_only_cookie', 1);
+ini_set('session.cookie_secure', 1);
+ini_set('session.entropy_length', 32);
+ini_set('session.hash_function', 'sha256');
+
+session_start();
 include 'includes/config.php';
+$mail = new PHPMailer(true);
 $emailErr = $passwordErr = $formErr = '';
 function test_inputs($data){
 	$data = trim($data);
@@ -31,28 +48,63 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 			$query->execute();
 			$result = $query -> fetch(PDO::FETCH_ASSOC);
 			if(empty($result['email'])){
-				$emailErr = "Email doesn't exist, please <a href='register.php'>register</a>";
+				$emailErr = "Email doesn't exist, please <a style='color:grey' href='register.php'>register</a>";
 			}elseif(!empty($result['email'])) {
 				$hash = $result['password'];
-					$fname = $result['fname'];
-					$sname = $result['sname'];
-					$email = $result['email'];
+				$fname = $result['fname'];
+				$sname = $result['sname'];
+				$email = $result['email'];
 				if (password_verify($password, $hash) == true){
-					setcookie('fname', $fname, secure:true,  httponly:true);
-					setcookie('sname', $sname, secure:true, httponly:true);
-					setcookie('email', $email, secure:true, httponly:true);
-					$_SESSION["email"] = $email;
-					$status = "logged-in";
-					$query = $conn->prepare("UPDATE members SET status=:status WHERE email=:email");
-					$query->bindParam(':status', $status);
-					$query->bindParam(':email', $email);
-					$query->execute();
-					header('location:dashboard.php');
-				} else {
+					try{
+						$mail->isSMTP();                                           // Set mailer to use SMTP
+						$mail->Host       = 'smtp.gmail.com';                      // Specify main and backup SMTP servers
+						$mail->SMTPAuth   = true;                                  // Enable SMTP authentication
+						$mail->Username   = 'info.santihealth@gmail.com';          // SMTP username
+						$mail->Password   = 'nbhf szmz qjnl tqqk';                 		// SMTP password
+						$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption, `PHPMailer::ENCRYPTION_SMTPS` also accepted
+						$mail->Port       = 587;                                   // TCP port to connect to
+						// Recipients
+						$mail->setFrom('info.santihealth@gmail.com', 'Santi Admin');
+						$mail->addAddress($email);    // Add a recipient
+						// $mail->addAddress('ellen@example.com');                 // Name is optional
+						// $mail->addReplyTo('info@example.com', 'Information');
+						// $mail->addCC('cc@example.com');
+						// $mail->addBCC('bcc@example.com');
+						// Attachments (optional)
+						// $mail->addAttachment('/var/tmp/file.tar.gz');           // Add attachments
+						// $mail->addAttachment('includes/images/white.jpg', 'new.jpg');      // Optional name
+						// Content
+						$mail->isHTML(true);                                       // Set email format to HTML
+						$mail->Subject = 'Account login';
+						$mail->Body    = "<div class='clientmail'>Hello, You're receiving this email because we noticed some activity in your acoount. If this was you please ignore this email.</div>";
+						$mail->AltBody = "You're receiving this mail because we noticed some activity in your email. If this was you please ignore this.";
+						if ($mail->send() == true){
+							$method = "AES-256-ECB";
+							$key = 'ab1cde2fg3hi4jk5lmn8opqrstuvwxyz';
+							$encryptingfname = openssl_encrypt($fname, $method, $key, OPENSSL_RAW_DATA);
+							$cipherfname = base64_encode($encryptingfname);
+							$encryptingsname = openssl_encrypt($sname, $method, $key, OPENSSL_RAW_DATA);
+							$ciphersname = base64_encode($encryptingsname);
+							$encryptingemail = openssl_encrypt($email, $method, $key, OPENSSL_RAW_DATA);
+							$cipheremail = base64_encode($encryptingemail);
+							setcookie('fname', $cipherfname, time() + 3600, secure:true, httponly:true);
+							setcookie('sname', $ciphersname, time() + 3600, secure:true, httponly:true);
+							setcookie('email', $cipheremail, time() + 3600, secure:true, httponly:true);
+							$_SESSION["email"] = $email;
+							$status = "logged-in";
+							$query = $conn->prepare("UPDATE members SET status=:status WHERE email=:email");
+							$query->bindParam(':status', $status);
+							$query->bindParam(':email', $email);
+							$query->execute();
+							header('location:dashboard.php');	
+							}
+						}catch(Exception $e) {
+							$emailErr = "Verification email not sent, try again.";
+						}
+				}else {
 					$passwordErr = 'Invalid password';
-				}
 			}
-
+		}
 		}catch(PDOException $e){
 			$formErr = "Internal server error";  
 		}
@@ -65,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="http-equiv" content="30">
-	<link rel="icon" type="images/x-icon" href="includes/images/white.JPG">
+	<link rel="icon" type="images/x-icon" href="includes/images/santi2.png">
 	<script src="includes/main.js"></script>
 	<link rel="stylesheet" href="w3.css" />	<link type="text/css" rel="stylesheet" href="includes/styles/main.css">
 	<title>Santi Login page</title>
@@ -109,7 +161,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 			</div>
 				<div id="message">
 					<h3>Password must contain the following:</h3>
-					<p id="letter" class="invalid">A <b>lowecase</b> letter</p>
+					<p id="letter" class="invalid">A <b>lowercase</b> letter</p>
 					<p id="capital" class="invalid">An <b>Uppercase</b> letter</p>
 					<p id="number" class="invalid">A <b>number</b></p>
 					<p id="length" class="invalid">Minimum of <b>8 characters</b></p>
@@ -117,7 +169,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 				<center>
 				<input type="submit" name="submit" value="Submit">
 				</center>
-<p>Not yet registered? <a href="register.php">Click here</a></p>
+<p>Not yet registered? <a href="register.php" style="color:grey;">Click here</a></p>
 			</div>
 			</fieldset>
 			</form>

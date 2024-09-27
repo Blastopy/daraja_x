@@ -218,6 +218,9 @@ input[type="text"], input[type="email"], input[type="tel"], input[type="password
 	border-radius: 10px;
 	width: 50%;
 }
+input[type="textarea"]{
+	padding: 200px;
+}
 -input::-webkit-outer-spin-button, -input::-webkit-outer-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
@@ -226,7 +229,7 @@ input[type="submit"] {
 	position: relative;
 	padding: 10px;
 	width: 20%;
-	background-color: green;
+	background-color: #04AA6D;
 	color: white;
 	font-size: larger;
 	border-radius: 10px;

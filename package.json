@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@digitalsamba/embedded-sdk": "^0.0.35"
+  },
+  "devDependencies": {
+    "webpack": "^5.91.0"
+  }
+}

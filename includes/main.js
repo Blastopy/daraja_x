@@ -1,4 +1,14 @@
+var menuicn = document.querySelector(".menuicn");
+var nav = document.querySelector(".navcontainer");
 
+menuicn.addEventListener("click", () => {
+    nav.classList.toggle("navclose");
+});
+
+var online = document.getElementById('main_content').innerHTML;
+if (online.navigator.onLine == 'false'){
+	document.getElementById('offline').innerHTML = "Seems you're offline😒";
+}
 function w3_open() {
 	document.getElementById("main").style.marginLeft = "21%";
 	document.getElementById("mySidebar").style.width = "20%";
@@ -10,6 +20,21 @@ function w3_close() {
 	document.getElementById("main").style.marginLeft = "0%";
 	document.getElementById("mySidebar").style.display = "none";
 	document.getElementById("openNav").style.display = "inline-block";
+}
+function showpsd() {
+	var x = document.getElementById("psw");
+	if (x.type === "password") {
+		x.type = "text";
+	} else {
+		x.type = "password";
+	}
+}
+
+var modal = document.getElementById('id01');
+window.onclick = function(event) {
+	if (event.target == modal) {
+		modal.style.display = "none";
+	}
 }
 
 //validate password
@@ -66,249 +91,238 @@ myInput.onkeyup = function() {
 		length.classList.add("invalid");
 	}
 }
-var modal = document.getElementById('id01');
-window.onclick = function(event) {
-	if (event.target == modal) {
-		modal.style.display = "none";
+
+var cookies = document.cookie;
+
+// Function to get a specific cookie by name
+function getCookie(name) {
+    var cookieArr = document.cookie.split(";");
+
+    for(let i = 0; i < cookieArr.length; i++) {
+        var cookiePair = cookieArr[i].split("=");
+
+        if(name == cookiePair[0].trim()) {
+            return decodeURIComponent(cookiePair[1]);
+        }
+    }
+    return null;
+}
+var buttons = getCookie("button");
+window.onload = function() {
+	if(buttons == 'doctors'){
+		showDoctors();
+	}else if(buttons == 'dashboard'){
+		Dashboard();
+	}else if(buttons == 'reports'){
+		reports();
+	}else if (buttons == 'sessions') {
+		sessions();
+	}else if (buttons == 'schedules') {
+		schedules();
+	}else if (buttons == 'payment') {
+	payment();
+}
+}
+function showDoctors() {
+	const doctors = document.getElementById('doctors-profile');
+	doctors.style.display = "block";
+	document.getElementById('main_content').style.display = 'none';
+	document.getElementById('main_content').cloneNode = doctors;
+	document.getElementById('reports').style.display = 'none';
+	document.getElementById('sessions').style.display = 'none';
+	document.getElementById('schedules').style.display = 'none';
+	document.getElementById('labreports').style.display = 'none';
+	document.getElementById('payment').style.display = 'none';
+	document.cookie = "button=doctors";
+}
+function Dashboard() {
+	const dashboard = document.getElementById('main_content');
+	dashboard.style.display = "block";
+	document.getElementById('doctors-profile').style.display = 'none';
+	document.getElementById('main_content').style.cloneNode = dashboard;
+	document.getElementById('reports').style.display = 'none';
+	document.getElementById('sessions').style.display = 'none';
+	document.getElementById('schedules').style.display = 'none';
+	document.getElementById('labreports').style.display = 'none';
+	document.getElementById('payment').style.display = 'none';
+	document.cookie = "button=dashboard";
+
+}
+
+function reports() {
+	const reports = document.getElementById('reports');
+	reports.style.display = "block";
+	document.getElementById('main_content').style.display = 'none';
+	document.getElementById('main_content').cloneNode = reports;
+	document.getElementById('sessions').style.display = 'none';
+	document.getElementById('doctors-profile').style.display = 'none';
+	document.getElementById('schedules').style.display = 'none';
+	document.getElementById('labreports').style.display = 'none';
+	document.getElementById('payment').style.display = 'none';
+	document.cookie = "button=reports";
+
+}
+function sessions() {
+	const sessions = document.getElementById('sessions');
+	sessions.style.display = "block";
+	document.getElementById('main_content').style.display = 'none';
+	document.getElementById('main_content').style.cloneNode = sessions;
+	document.getElementById('reports').style.display = 'none';
+	document.getElementById('main_content').style.display = 'none';
+	document.getElementById('doctors-profile').style.display = 'none';
+	document.getElementById('schedules').style.display = 'none';
+	document.getElementById('labreports').style.display = 'none';
+	document.getElementById('payment').style.display = 'none';
+	document.cookie = "button=sessions";
+}
+function schedules() {
+	const schedules = document.getElementById('schedules');
+	schedules.style.display = "block";
+	document.getElementById('main_content').style.display = 'none';
+	document.getElementById('main_content').style.cloneNode = schedules;
+	document.getElementById('doctors-profile').style.display = 'none';
+	document.getElementById('reports').style.display = 'none';
+	document.getElementById('sessions').style.display = 'none';
+	document.getElementById('labreports').style.display = 'none';
+	document.getElementById('payment').style.display = 'none';
+	document.cookie = "button=schedules";
+}
+function labreports() {
+	const labreports = document.getElementById('labreports');
+	labreports.style.display = "block";
+	document.getElementById('main_content').style.display = 'none';
+	document.getElementById('main_content').style.cloneNode = labreports;
+	document.getElementById('doctors-profile').style.display = 'none';
+	document.getElementById('reports').style.display = 'none';
+	document.getElementById('sessions').style.display = 'none';
+	document.getElementById('schedules').style.display = 'none';
+	document.getElementById('payment').style.display = 'none';
+	document.cookie = "button=labreports";
+
+}
+function payment() {
+	const payment = document.getElementById('payment');
+	payment.style.display = "block";
+	document.getElementById('main_content').style.display = 'none';
+	document.getElementById('main_content').style.cloneNode = payment;
+	document.getElementById('doctors-profile').style.display = 'none';
+	document.getElementById('reports').style.display = 'none';
+	document.getElementById('labreports').style.display = 'none';
+	document.getElementById('sessions').style.display = 'none';
+	document.getElementById('schedules').style.display = 'none';
+	document.cookie = "button=payment";
+}
+function openForm() {
+	document.getElementById('myForm').style.display = 'block';
+}
+function closeForm() {
+	document.getElementById('myForm').style.display = 'none';
+
+}
+
+const taskInput = document.getElementById("task");
+const priorityInput = document.getElementById("priority");
+const deadlineInput = document.getElementById("deadline");
+const addTaskButton = document.getElementById("add-task");
+const taskList = document.getElementById("task-list");
+
+addTaskButton.addEventListener("click", () => {
+	const task = taskInput.value;
+	const priority = priorityInput.value;
+	const deadline = deadlineInput.value;
+	if (task.trim() === "" || deadline === "") {
+		alert("Please select an upcoming date for the deadline.")
+		return; // Don't add task if task or deadline is empty
+	}
+
+	const selectedDate = new Date(deadline);
+	const currentDate = new Date();
+
+	if (selectedDate <= currentDate) {
+		alert("Please select an upcoming date for the deadline.");
+		return; // Don't add task if deadline is not in the future
+	}
+	const taskItem = document.createElement("div");
+	taskItem.classList.add("task");
+	taskItem.innerHTML = `
+	<p>${task}</p>
+	<p>Priority: ${priority}</p>
+	<p>Deadline: ${deadline}</p>
+	<button class="mark-done" type="submit" name="Delete">Mark Done</button>
+`;
+	taskList.appendChild(taskItem);
+	taskInput.value = "";
+	priorityInput.value = "top";
+	deadlineInput.value = "";
+});
+
+var close = document.getElementsByClassName('closebtn');
+var i;
+
+for (i=0;i<close.length;i++){
+	close[i].onclick = function(){
+		var div = this.parentElement;
+		div.style.opacity = '0';
+		setTimeout(function(){ div.style.display = "none"}, 600);
 	}
 }
-if (navigator.onLine == 'false') {
-document.getElementsByName('body').innerHTML = "Seems you are offline😒."
-}
-// toggel theme
-function darkmode() {
-var element = document.body;
-element.classList.toggle("dark-mode")
-element.classList.toggle("body");
-}
 
-function showDoctors() {
-const doctorsProfile = document.getElementById('doctors-profile');
-doctorsProfile.style.display = "block";
-document.getElementById('main_content').style.display = 'none';
-document.getElementById('main_content').cloneNode = doctorsProfile;
-document.getElementById('charge-sheet').style.display = 'none';
-document.getElementById('labtests').style.display = 'none';
-document.getElementById('imaging').style.display = 'none';
-document.getElementById('reviews').style.display = 'none';
-document.getElementById('nurses').style.display = 'none';
-document.getElementById('updates').style.display = 'none';
-}
+function searchFunction() {
+	var input, filter, table, tr, td, i, txtValue;
+	input = document.getElementById('textinput');
+	filter = input.value;
+	table = document.getElementById('santiTable');
+	tr = table.getElementsByTagName('tr');
 
-function showCharge() {
-const chargeSheet = document.getElementById('charge-sheet');
-chargeSheet.style.display = "block";
-document.getElementById('main_content').style.display = 'none';
-document.getElementById('main_content').cloneNode = chargeSheet;
-document.getElementById('doctors-profile').style.display = 'none';
-document.getElementById('labtests').style.display = 'none';
-document.getElementById('imaging').style.display = 'none';
-document.getElementById('reviews').style.display = 'none';
-document.getElementById('nurses').style.display = 'none';
-document.getElementById('seminors').style.display = 'none';
-document.getElementById('updates').style.display = 'none';
+	for(i=0;i<tr.length;i++){
+		td = tr[i].getElementsByTagName('td')[4];
+		if (td) {
+			txtValue = td.textContent || td.innerText;
+			if (txtValue.indexOf(filter) > -1){
+				tr[i].style.display = '';
+			} else {
+				tr[i].style.display = 'none';
+			}
+		}
+	}
 }
-function showTests() {
-const labTests = document.getElementById('labtests');
-labTests.style.display = "block";
-document.getElementById('main_content').style.display = 'none';
-document.getElementById('main_content').cloneNode = labTests;
-document.getElementById('doctors-profile').style.display = 'none';
-document.getElementById('charge-sheet').style.display = 'none';
-document.getElementById('imaging').style.display = 'none';
-document.getElementById('reviews').style.display = 'none';
-document.getElementById('nurses').style.display = 'none';
-document.getElementById('updates').style.display = 'none';
+filterSelection('all')
+			function filterSelection(c) {
+				var x, i;
+				x = document.getElementsByClassName('ditching');
+				if (c == 'all') c = "";
+				for (i=0;i < x.length;i++){
+					w3RemoveClass(x[i], "show");
+					if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+				}
+			}
+			function w3AddClass(element, name){
+				var i, arr1, arr2;
+				arr1 = element.className.split(" ");
+				arr2 = name.split(" ");
+				for (i = 0; i < arr2.length; i++){
+					if (arr1.indexOf(arr2[i]) == -1){
+						element.className += " " + arr2[i];
+					}
+				}
+			}
+			function w3RemoveClass(element, name){
+				var i, arr1, arr2;
+				arr1 = element.className.split(" ");
+				arr2 = name.split(" ");
+				for (i = 0; i < arr2.length;i++){
+					while (arr1.indexOf(arr2[i]) > -1) {
+						arr1.splice(arr1.indexOf(arr2[i]), 1);
+					}
+				}
+				element.className = arr1.join(" ");
+			}
+			var btnContainer = document.getElementById("filter");
+			var btns = btnContainer.getElementsByClassName("filterbtn");
+			for (var i =0; i < btns.length; i ++){
+				btns[i].addEventListener("click", function(){
+					var current = document.getElementsByClassName("active");
+					current[0].className = current[0].className.replace("active", "");
+					this.className += " active";
+				});
 }
-function showImages() {
-const images = document.getElementById('imaging');
-images.style.display = "block";
-document.getElementById('main_content').style.display = 'none';
-document.getElementById('main_content').cloneNode = images;
-document.getElementById('doctors-profile').style.display = 'none';
-document.getElementById('charge-sheet').style.display = 'none';
-document.getElementById('labtests').style.display = 'none';
-document.getElementById('reviews').style.display = 'none';
-document.getElementById('nurses').style.display = 'none';
-document.getElementById('updates').style.display = 'none';
-}
-function showReviews() {
-const reviews = document.getElementById('reviews');
-reviews.style.display = "block";
-document.getElementById('main_content').style.display = 'none';
-document.getElementById('main_content').cloneNode = reviews;
-document.getElementById('doctors-profile').style.display = 'none';
-document.getElementById('charge-sheet').style.display = 'none';
-document.getElementById('labtests').style.display = 'none';
-document.getElementById('imaging').style.display = 'none';
-document.getElementById('updates').style.display = 'none';
-document.getElementById('nurses').style.display = 'none';
-document.getElementById('seminors').style.display = 'none';
-document.getElementById('pharmacy').style.display = 'none';
-}
-function showUpdates() {
-const updates = document.getElementById('updates');
-updates.style.display = "block";
-document.getElementById('main_content').style.display = 'none';
-document.getElementById('main_content').cloneNode = updates;
-document.getElementById('doctors-profile').style.display = 'none';
-document.getElementById('labtests').style.display = 'none';
-document.getElementById('imaging').style.display = 'none';
-document.getElementById('reviews').style.display = 'none';
-document.getElementById('seminors').style.display = 'none';
-document.getElementById('charge-sheet').style.display = 'none';
-document.getElementById('nurses').style.display = 'none';
-}
-function showSeminors() {
-const seminors = document.getElementById('seminors');
-seminors.style.display = "block";
-document.getElementById('main_content').style.display = 'none';
-document.getElementById('main_content').cloneNode = seminors;
-document.getElementById('doctors-profile').style.display = 'none';
-document.getElementById('labtests').style.display = 'none';
-document.getElementById('imaging').style.display = 'none';
-document.getElementById('reviews').style.display = 'none';
-document.getElementById('charge-sheet').style.display = 'none';
-document.getElementById('updates').style.display = 'none';
-document.getElementById('pharmacy').style.display = 'none';
-document.getElementById('nurses').style.display = 'none';
-}
-function pharmacies() {
-const pharmacy = document.getElementById('pharmacy');
-pharmacy.style.display = "block";
-document.getElementById('main_content').style.display = 'none';
-document.getElementById('main_content').cloneNode = pharmacy;
-document.getElementById('doctors-profile').style.display = 'none';
-document.getElementById('labtests').style.display = 'none';
-document.getElementById('imaging').style.display = 'none';
-document.getElementById('reviews').style.display = 'none';
-document.getElementById('charge-sheet').style.display = 'none';
-document.getElementById('updates').style.display = 'none';
-document.getElementById('seminors').style.display = 'none';
-document.getElementById('nurses').style.display = 'none';
-}
-function pharmacies() {
-const pharmacy = document.getElementById('pharmacy');
-pharmacy.style.display = "block";
-document.getElementById('main_content').style.display = 'none';
-document.getElementById('main_content').cloneNode = pharmacy;
-document.getElementById('doctors-profile').style.display = 'none';
-document.getElementById('labtests').style.display = 'none';
-document.getElementById('imaging').style.display = 'none';
-document.getElementById('reviews').style.display = 'none';
-document.getElementById('charge-sheet').style.display = 'none';
-document.getElementById('updates').style.display = 'none';
-document.getElementById('seminors').style.display = 'none';
-document.getElementById('nurses').style.display = 'none';
-}
-function showNurses() {
-const nurses = document.getElementById('nurses');
-nurses.style.display = "block";
-document.getElementById('main_content').style.display = 'none';
-document.getElementById('main_content').cloneNode = nurses;
-document.getElementById('doctors-profile').style.display = 'none';
-document.getElementById('labtests').style.display = 'none';
-document.getElementById('imaging').style.display = 'none';
-document.getElementById('reviews').style.display = 'none';
-document.getElementById('charge-sheet').style.display = 'none';
-document.getElementById('updates').style.display = 'none';
-document.getElementById('seminors').style.display = 'none';
-document.getElementById('pharmacy').style.display = 'none';
-}
-
-function showPatients() {
-	const chargeSheet = document.getElementById('charge-sheet');
-	chargeSheet.style.display = "block";
-	document.getElementById('main_content').style.display = 'none';
-	document.getElementById('main_content').cloneNode = chargeSheet;
-	document.getElementById('doctors-profile').style.display = 'none';
-	document.getElementById('labtests').style.display = 'none';
-	document.getElementById('seminors').style.display = 'none';
-	document.getElementById('imaging').style.display = 'none';
-	document.getElementById('reviews').style.display = 'none';
-	document.getElementById('nurses').style.display = 'none';
-	document.getElementById('updates').style.display = 'none';
-}
-
-function registerDoc() {
-	const images = document.getElementById('imaging');
-	images.style.display = "block";
-	document.getElementById('main_content').style.display = 'none';
-	document.getElementById('main_content').cloneNode = images;
-	document.getElementById('doctors-profile').style.display = 'none';
-	document.getElementById('charge-sheet').style.display = 'none';
-	document.getElementById('labtests').style.display = 'none';
-	document.getElementById('updates').style.display = 'none';
-	document.getElementById('reviews').style.display = 'none';
-	document.getElementById('nurses').style.display = 'none';
-}
-function viewRecords() {
-	const reviews = document.getElementById('reviews');
-	reviews.style.display = "block";
-	document.getElementById('main_content').style.display = 'none';
-	document.getElementById('main_content').cloneNode = reviews;
-	document.getElementById('doctors-profile').style.display = 'none';
-	document.getElementById('charge-sheet').style.display = 'none';
-	document.getElementById('labtests').style.display = 'none';
-	document.getElementById('imaging').style.display = 'none';
-	document.getElementById('updates').style.display = 'none';
-	document.getElementById('seminors').style.display = 'none';
-	document.getElementById('nurses').style.display = 'none';
-}
-function liveSessions() {
-	const updates = document.getElementById('updates');
-	updates.style.display = "block";
-	document.getElementById('main_content').style.display = 'none';
-	document.getElementById('main_content').cloneNode = updates;
-	document.getElementById('doctors-profile').style.display = 'none';
-	document.getElementById('labtests').style.display = 'none';
-	document.getElementById('imaging').style.display = 'none';
-	document.getElementById('reviews').style.display = 'none';
-	document.getElementById('seminors').style.display = 'none';
-	document.getElementById('charge-sheet').style.display = 'none';
-	document.getElementById('nurses').style.display = 'none';
-	document.getElementById('pharmacy').style.display = 'none';
-}
-function viewBills() {
-	const seminors = document.getElementById('seminors');
-	seminors.style.display = "block";
-	document.getElementById('main_content').style.display = 'none';
-	document.getElementById('main_content').cloneNode = seminors;
-	document.getElementById('doctors-profile').style.display = 'none';
-	document.getElementById('labtests').style.display = 'none';
-	document.getElementById('imaging').style.display = 'none';
-	document.getElementById('reviews').style.display = 'none';
-	document.getElementById('charge-sheet').style.display = 'none';
-	document.getElementById('updates').style.display = 'none';
-	document.getElementById('pharmacy').style.display = 'none';
-	document.getElementById('nurses').style.display = 'none';
-}
-function pharmacies() {
-	const pharmacy = document.getElementById('pharmacy');
-	pharmacy.style.display = "block";
-	document.getElementById('main_content').style.display = 'none';
-	document.getElementById('main_content').cloneNode = pharmacy;
-	document.getElementById('doctors-profile').style.display = 'none';
-	document.getElementById('labtests').style.display = 'none';
-	document.getElementById('imaging').style.display = 'none';
-	document.getElementById('reviews').style.display = 'none';
-	document.getElementById('charge-sheet').style.display = 'none';
-	document.getElementById('updates').style.display = 'none';
-	document.getElementById('seminors').style.display = 'none';
-	document.getElementById('nurses').style.display = 'none';
-}
-function showServices() {
-	const nurses = document.getElementById('nurses');
-	nurses.style.display = "block";
-	document.getElementById('main_content').style.display = 'none';
-	document.getElementById('main_content').cloneNode = nurses;
-	document.getElementById('doctors-profile').style.display = 'none';
-	document.getElementById('labtests').style.display = 'none';
-	document.getElementById('imaging').style.display = 'none';
-	document.getElementById('reviews').style.display = 'none';
-	document.getElementById('charge-sheet').style.display = 'none';
-	document.getElementById('updates').style.display = 'none';
-	document.getElementById('seminors').style.display = 'none';
-	document.getElementById('pharmacy').style.display = 'none';
-}
-// Implementing the task schedular

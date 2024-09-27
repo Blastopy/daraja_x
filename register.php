@@ -1,5 +1,4 @@
 <?php
-// connect to the database and send the data to the database
 include 'includes/config.php';
 $fnameErr = $snameErr = $telErr = $emailErr = $residenceErr = $genderErr = $passwordErr = $confirmErr = $ageErr = "";
 function validate($data) {
@@ -8,11 +7,20 @@ function validate($data) {
 	$data = stripcslashes($data);
 	return $data;
 }
-$counties = ['Mombasa', 'Kwale', 'Kilifi', 'Tana River', 'Lamu', 'Taita/Taveta,', 'Garissa', 
+$counties = array('Mombasa', 'Kwale', 'Kilifi', 'Tana River', 'Lamu', 'Taita/Taveta,', 'Garissa', 
 'Wajir', 'Mandera', 'Marsabit', 'Isiolo', 'Meru', 'Tharaka-Nithi', 'Embu', 'Kitui', 'Machakos',
- 'Makueni', 'Nyandarua', 'Nyeri', 'Kirinyaga', "Murang'a", 'Kiambu', 'Turkana', 'West Pokot', 'Samburu', 
- 'Trans Nzoia', 'Uasin Gishu', 'Elgeyo/Marakwet', 'Nandi', 'Baringo', 'Laikipia', 'Nakuru', 'Narok', 'Kajiado', 'Kericho', 'Bomet', 'Kakamega', 'Vihiga', 'Bungoma',
- 'Busia', 'Siaya', 'Kisumu', 'Homa Bay', 'Migori', 'Kisii', 'Nyamira'. 'Nairobi'];
+ 'Makueni', 'Nyandarua', 'Nyeri', 'Kirinyaga', "Murang'a", 'Kiambu', 'Turkana', 'West Pokot', 
+ 'Samburu','Trans Nzoia', 'Uasin Gishu', 'Elgeyo/Marakwet', 'Nandi', 'Baringo', 'Laikipia', 'Nakuru', 
+ 'Narok', 'Kajiado', 'Kericho', 'Bomet', 'Kakamega', 'Vihiga', 'Bungoma',
+ 'Busia', 'Siaya', 'Kisumu', 'Homa Bay', 'Migori', 'Kisii', 'Nyamira', 'Nairobi');
+
+
+ use PHPMailer\PHPMailer\PHPMailer;
+ use PHPMailer\PHPMailer\Exception;
+ 
+ require 'vendor/autoload.php';
+ 
+ $mail = new PHPMailer(true);
 
 if ($_SERVER['REQUEST_METHOD'] == "POST"){
 	if (isset($_POST['submit'])){
@@ -52,9 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 	if (isset($_POST['submit'])){
 		if (empty($_POST['residence'])) {
 			$residenceErr = "Please enter your county of residence";
-		} else {
-			if (in_array($_POST['residence'], $counties) == true) {
-				$residenceErr = "Your county doesn't exist in our database";
+		} elseif(!empty($_POST['residence'])) {
+			if (in_array($_POST['residence'], $counties) == false) {
+				$residenceErr = "Please enter a valid county";
 			} else {
 				$residence = ucwords($_POST['residence']);
 				$residence = validate($_POST['residence']);
@@ -67,8 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			$ageErr = "Please enter your age";
 		} else {
 			if (strlen($_POST['age']) > 2) {
-				$ageErr = "Enter Your correct age";
-			} else {
+				$ageErr = "Please enter your correct age";
+			}elseif($_POST['age'] < 0){
+				$ageErr = "Please enter your correct age";
+			} 
+			else {
 				$age = validate($_POST['age']);
 				$age = filter_input(INPUT_POST, 'age', FILTER_SANITIZE_NUMBER_INT);
 		}
@@ -100,8 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		}
 	}
 	
-
-	//Check if ther are any available errors before sending to the server
 	if (empty($fnameErr) && empty($snameErr) && empty($telErr) && empty($emailErr) && empty($residenceErr) && empty($genderErr) && empty($passwordErr) && empty($confirmErr)){
 		$stmt = $conn->prepare("SELECT email FROM members WHERE email=:email");
 		$stmt -> bindParam(':email', $email);
@@ -122,17 +131,37 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 				$query->bindParam(':password', $password);
 				$query->bindParam(':status', $status);
 				if($query->execute() == TRUE){
-					setcookie('fname', $fname, secure:true, httponly:true);
-					setcookie('sname', $sname, secure:true, httponly:true);
-					setcookie('email', $email, secure:true, httponly:true);
-					$_SESSION['email'] = $email;
-					header('location:login.php');
+					$mail->isSMTP();                                           // Set mailer to use SMTP
+						$mail->Host       = 'smtp.gmail.com';                      // Specify main and backup SMTP servers
+						$mail->SMTPAuth   = true;                                  // Enable SMTP authentication
+						$mail->Username   = 'info.santihealth@gmail.com';          // SMTP username
+						$mail->Password   = 'nbhf szmz qjnl tqqk';                 		// SMTP password
+						$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption, `PHPMailer::ENCRYPTION_SMTPS` also accepted
+						$mail->Port       = 587;                                   // TCP port to connect to
+						// Recipients
+						$mail->setFrom('info.santihealth@gmail.com', 'Santi Admin');
+						$mail->addAddress($email);    // Add a recipient
+						// $mail->addAddress('ellen@example.com');                 // Name is optional
+						// $mail->addReplyTo('info@example.com', 'Information');
+						// $mail->addCC('cc@example.com');
+						// $mail->addBCC('bcc@example.com');
+						// Attachments (optional)
+						// $mail->addAttachment('/var/tmp/file.tar.gz');           // Add attachments
+						// $mail->addAttachment('includes/images/white.jpg', 'new.jpg');      // Optional name
+						// Content
+						$mail->isHTML(true);                                       // Set email format to HTML
+						$mail->Subject = 'Successfull Account registration.';
+						$mail->Body    = "<div class='clientmail'>Hello ☺, Thank you for registering with Santi Health as your healthcare partner. We are here to take care of your healthcare concerns and ensure better health everyday.</div>";
+						$mail->AltBody = "Hello ☺, Thank you for registering with Santi Health as your healthcare partner. We are here to take care of your healthcare concerns and ensure better health everyday";
+						if ($mail->send() == true){
+							header('location:login.php');
+						}
 				}
 			} catch(PDOException $e){
 				$formErr = "Internal server error.";
 			}
 	} else {
-		$emailErr = "Email already exists, please <a href='login.php'>login</a>";
+		$emailErr = "Email already exists, please <a style='color:grey;' href='login.php'>login</a>";
 	}
 	} 
 }
@@ -143,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="http-equiv" content="30">
-	<link rel="icon" type="images/x-icon" href="includes/images/white.JPG">
+	<link rel="icon" type="images/x-icon" href="includes/images/santi2.png">
 	<link rel="stylesheet" href="w3.css" />
 	<script src="includes/main.js"></script>
 	<link rel="stylesheet" type="text/css" href="includes/styles/main.css">
@@ -201,7 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 			</div>
 			<div class="form-input">
 				<label for="residence">Age:</label><br>
-				<input type="number" placeholder="Age" required name="age" class="form-group<?php echo $ageErr ?? NULL?>" autocomplete="on" maxlength="2">
+				<input type="text" placeholder="Age" required name="age" class="form-group<?php echo $ageErr ?? NULL?>" autocomplete="on" maxlength="02">
 				<div class="errormessage">
 					<?php echo $ageErr ?>
 				</div>
@@ -227,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 				<div class="form-input">
 				<div id="message">
 					<h3>Password must contain the following:</h3>
-					<p id="letter" class="invalid">A <b>lowecase</b> letter</p>
+					<p id="letter" class="invalid">A <b>lowercase</b> letter</p>
 					<p id="capital" class="invalid">An <b>Uppercase</b> letter</p>
 					<p id="number" class="invalid">A <b>number</b></p>
 					<p id="length" class="invalid">Minimum <b>characters</b></p>
@@ -247,16 +276,18 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 				<label for="password">Confirm Password:</label><br>
 				<input type="password" id="psw1" title="Must contain at least one number and one uppercase and lowercase letter and at least 8 characters" required name="password_confirm" placeholder="Confirm Password" required id="male"  class="" autocomplete="on">
 				</div>
+				<?php if ($passwordErr || $confirmErr != ''): ?>
 				<div class="errormessage">
 					<?php echo $passwordErr . $confirmErr ?>
 				</div>
+				<?php endif ?>
 				<div class="form-input">
-				<p>By registering you agree to our <a href="">terms and conditions</a></p>
+				<p>By registering you agree to our <a href="" style="color: blue;">terms and conditions</a> and our <a href="" style="color: blue;">privacy policy</a></p>
 					<center>
 				<input type="submit" name="submit" value="submit">
 					</center>
 				</div>
-				<p>Already registered?<a href="login.php"> Login</a></p>
+				<p>Already registered?<a href="login.php" style="color:grey"> Login</a></p>
 			</fieldset>
 		</form>
 		<script>

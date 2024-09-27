@@ -1,4 +1,13 @@
-<?php session_start();
+<?php 
+ini_set('session.cookie_lifetime', 0);
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_strict_mode', 1);
+ini_set('session.use_only_cookie', 1);
+ini_set('session.cookie_secure', 1);
+ini_set('session.entropy_length', 32);
+ini_set('session.hash_function', 'sha256');
+
+session_start();
 include 'includes/config.php';
 $emailErr = $passwordErr = $formErr = '';
 function test_inputs($data){
@@ -34,14 +43,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 				$emailErr = "Email doesn't exist";
 			}elseif(!empty($result['email'])) {
 				$hash = $result['password'];
-					$fname = $result['fname'];
-					$sname = $result['sname'];
-					$email = $result['email'];
+				$fname = $result['fname'];
+				$sname = $result['sname'];
+				$email = $result['email'];
 				if (password_verify($password, $hash) == true){
-					setcookie('fname', $fname, secure:true,  httponly:true);
-					setcookie('sname', $sname, secure:true, httponly:true);
-					setcookie('email', $email, secure:true, httponly:true);
-					$_SESSION["email"] = $email;
+					$method = "AES-256-ECB";
+					$key = 'ab1cde2fg3hi4jk5lmn8opqrstuvwxyz';
+					$encryptingfname = openssl_encrypt($fname, $method, $key, OPENSSL_RAW_DATA);
+					$cipherfname = base64_encode($encryptingfname);
+					$encryptingsname = openssl_encrypt($sname, $method, $key, OPENSSL_RAW_DATA);
+					$ciphersname = base64_encode($encryptingsname);
+					$encryptingemail = openssl_encrypt($email, $method, $key, OPENSSL_RAW_DATA);
+					$cipheremail = base64_encode($encryptingemail);
+					setcookie('fname', $cipherfname, time() + 3600, secure:true, httponly:true);
+					setcookie('sname', $ciphersname, time() + 3600, secure:true, httponly:true);
+					setcookie('email', $cipheremail, time() + 3600, secure:true, httponly:true);
+					$_SESSION["doctors_session"] = $email;
 					$status = "logged-in";
 					$query = $conn->prepare("UPDATE santi_data SET status=:status WHERE email=:email");
 					$query->bindParam(':status', $status);
@@ -67,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 	<link rel="icon" type="images/x-icon" href="includes/images/white.JPG">
 	<script src="includes/main.js"></script>
 	<link rel="stylesheet" href="w3.css" />	<link type="text/css" rel="stylesheet" href="includes/styles/main.css">
-	<title>Login</title>
+	<title>Santi Health - Doctor's Login</title>
 </head>
 <body class="form-body">
 	<main class="forms">

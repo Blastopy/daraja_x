@@ -4,14 +4,32 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="">
-	<link rel="icon" type="images/x-icon" href="includes/images/white.JPG">
+	<link rel="icon" type="images/x-icon" href="includes/images/santi2.png">
 	<link rel="stylesheet" type="text/css" href="includes/styles/main.css">
 	<link rel="stylesheet" type="text/css" href="includes/styles/index.css">
+	<link rel="stylesheet" type="text/css" href="includes/styles/responsive_index.css">
 	<title>Santi Health Homepage</title>
 </head>
+<div class="responsive">
+	<center>
+	<img src="includes/images/santi2.png" alt="profile" width="300px">
+	</center>
+			<p>Page not configured for your device, please reach us on our whatsapp by clicking this icon 
+			<br>
+			<center>	
+			<a href="https://chat.whatsapp.com/FOcNZQSDgpoEnRC2FtreyZ">
+			<svg xmlns="http://www.w3.org/2000/svg" style="color:green" width="60" height="60" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+			<path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+			</svg></a>
+			or reach us through our email address: <b>info.santihealth@gmail.com</b> or call us via our 24/7 response tel no: <b>+254(0)710444964</b>
+			</p>
+		</center>
+		</div>
 	<body onload="myFunction()" style="margin: 0;">
 		<div id="loader">
-			<img src="includes/images/santi2.png" alt="profile">
+			<div class="loader-image">
+				<img src="includes/images/santi2.png" alt="avatar">
+		</div>
 		</div>
 	<div class="animate-bottom" style="display: none;" id="myDiv">
 		<div class="indexNav">
@@ -22,6 +40,7 @@
 				</div>
 	</div>
 		<main>
+			<div id="main_content">
 		<div class="main">
 			<center>
 			<div class="present">
@@ -35,6 +54,9 @@
 				<br>
 				<a href="register.php" class="homelink">Register</a> or 
 				<a href="login.php" class="homelink">Login</a>
+				<br>
+				We offer assistive care to our admitted patients with fully medical operations to ensure the wellbeing of our patients
+				in and out of medical facilities.
 </center>
 <h2>Some of our services include:</h2>
 			<div class="home-images">
@@ -72,7 +94,11 @@
 	</center>
 			</span>
 			<div class="devices">
-			<h1>Accessible across all devices</h1>
+			<span class="ditch-1">
+		<img src="includes/images/cardex.jpg" alt="schedule.png">
+		<span><p>Ready to help doctor on stand by for all your medical emergencies</p></span>
+		</span>
+		<h1>Accessible across all devices</h1>
 			<div class="smartphone">
 				<div class="content">
 					<img src="includes/images/white.JPG" style="width:100%;border:none;height:90%;float:left;" />
@@ -82,7 +108,7 @@
 		<span class="ditch-1">
 		<img src="includes/images/schedule.jpeg" alt="schedule.png">
 		<center>
-		<p><a href="register.php" style="color: white;">Register Today</a> to utilize	</p>
+		<p><a href="register.php" style="color: white;"><u>Register Today</u></a> to utilize	</p>
 		<p class="index-notes">The appointment scheduler</p>
 		</center>
 		</span>
@@ -105,14 +131,15 @@
 			<img src="includes/images/ga.png" alt="ga" width="20%" height="10%">
 			<img src="includes/images/britam.png" alt="britam" width="20%" height="10%">
 			</marquee>
-		</main>
-</body>
-<footer>
+			</div>
+			<footer>
 <div class="footer">
 			<?php include 'includes/footer.php' ?>
 	</div>
 </footer>
-	</div>
+</div>
+		</main>
+</body>
 <script>
 		var myVar;
 		function myFunction(){

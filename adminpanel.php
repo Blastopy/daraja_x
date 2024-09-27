@@ -1,182 +1,389 @@
 <?php 
+ini_set('session.cookie_lifetime', 0);
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_strict_mode', 1);
+ini_set('session.use_only_cookie', 1);
+ini_set('session.cookie_secure', 1);
+ini_set('session.entropy_length', 32);
+ini_set('session.hash_function', 'sha256');
 session_start();
-if (empty($_SESSION['email']) && empty($_COOKIE['fname']) && empty($_COOKIE['sname'])) {
+if (empty($_SESSION['admin'])){
+	header('location:adminlogin.php');
+}elseif(empty($_SESSION['email']) && empty($_COOKIE['fname']) && empty($_COOKIE['sname'])) {
 	setcookie('fname', '', time() - 3600);
 	setcookie('email', '',time() - 3600);
 	setcookie('sname', '', time() - 3600);
+	setcookie('admin', '', time() - 3600);
 	session_destroy();
 	header('location:logout.php');
-}else {
-	include 'includes/config.php';
-	include 'newmember.php';
-	$fname = ucfirst($_COOKIE['fname']);
-	$name = $_COOKIE['fname'];
-	$sname = ucfirst($_COOKIE['sname']);
-	$profile = substr($fname, 0, 1) . substr($sname, 0, 1);
-	$greeting = date('a');
-	if ($greeting == 'am') {
-		$greet = 'Good morning';
-	} elseif ($greeting == 'pm') {
-		$greet = 'Good evening';
+}elseif(!empty($_SESSION['email']) && !empty($_COOKIE['fname']) && !empty($_COOKIE['sname']) && !empty($_SESSION['admin'])) {
+include 'includes/config.php';
+include 'newmember.php';
+include 'initiatepayment.php';
+include 'santiapi.php';
+$totalRooms = $booking = '';
+$fname = $_COOKIE['fname'];
+$sname = $_COOKIE['sname'];
+$email = $_COOKIE['email'];
+//Decrypt the encrypted data
+$method = "AES-256-ECB";
+$key = 'ab1cde2fg3hi4jk5lmn8opqrstuvwxyz';
+$cipherfname = base64_decode($fname);
+$ciphersname = base64_decode($sname);
+$cipheremail = base64_decode($email);
+$iv_size = openssl_cipher_iv_length($method);
+$firstname = openssl_decrypt($cipherfname, $method, $key, OPENSSL_RAW_DATA);
+$secondname = openssl_decrypt($ciphersname, $method, $key, OPENSSL_RAW_DATA);
+$cookiemail = openssl_decrypt($cipheremail, $method, $key, OPENSSL_RAW_DATA);
+$profile = $firstname.' '.$secondname;
+$reportErr = $reportAmountErr = $reportnameErr = $reportDateErr = $laboratoryErr = $reportFileErr = $reportnameErr = $statusErr = $reportemailErr = $reportcommentErr = $priorityErr = '';
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+	if (isset($_POST['upload-report'])){
+		if (empty($_POST['report-name'])){
+			$reportnameErr = 'Patient name cannot be empty';
+		}elseif(!empty($_POST['report-name'])){
+			$reportName = test_inputs($_POST['report-name']);
+			$reportName = filter_input(INPUT_POST, 'report-name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		}
 	}
-?> 
+	if (isset($_POST['upload-report'])){
+		if(empty($_POST['report-priority'])){
+			$priorityErr = 'The priority must be set.';
+		}elseif(!empty($_POST['report-priority'])){
+			$reportPriority = test_inputs($_POST['report-priority']);
+			$reportPriority = filter_input(INPUT_POST, 'report-priority', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		}
+	}
+	if (isset($_POST['upload-report'])){
+		if(empty($_POST['report-status'])){
+			$statusErr = 'The status must be set.';
+		}elseif(!empty($_POST['report-status'])){
+			$reportStatus = test_inputs($_POST['report-status']);
+			$reportStatus = filter_input(INPUT_POST, 'report-status', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		}
+	}
+	if (isset($_POST['upload-report'])){
+		if(empty($_POST['report-date'])){
+			$reportDateErr = 'Please fill the report date';
+		}elseif(!empty($_POST['report-date'])){
+			$reportDate = test_inputs($_POST['report-date']);
+			$reportDate = filter_input(INPUT_POST, 'report-date', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+			$reportDate = str_replace('T', ' ', $reportDate);
+		}
+	}
+	if (isset($_POST['upload-report'])){
+		if(empty($_POST['laboratory'])){
+			$laboratoryErr = 'Lab cannot be empty';
+		}elseif(!empty($_POST['laboratory'])){
+			$lab = test_inputs($_POST['laboratory']);
+			$lab = filter_input(INPUT_POST, 'laboratory', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		}
+	}
+	if (isset($_POST['upload-report'])){
+		if(empty($_POST['report-amount'])){
+			$reportAmountErr = 'Lab cannot be empty';
+		}elseif(!empty($_POST['report-amount'])){
+			$reportAmount = test_inputs($_POST['report-amount']);
+			$reportAmount = filter_input(INPUT_POST, 'report-amount', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		}
+	}
+	if (isset($_POST['upload-report'])){
+		if(empty($_FILES['report-file'])){
+			$reportErr = 'Please upload a file';
+		}elseif(!empty($_FILES['report-file'])){
+			$reportFile = basename($_FILES['report-file']['name']);
+			$target_dir = 'uploads/';
+			$target_file = $target_dir.basename($_FILES['report-file']['name']);
+			$uploadOk = 1;
+			$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+			if(isset($_POST['upload_report'])){
+				$check = getimagesize($_FILES['report-file']['tmp_name']);
+				if($check !== false){
+					$uploadOk = 1;
+					// Check if file already exists
+					if (file_exists($target_file)){
+						$uploadOk = 0;
+						// Check file size
+						if ($_FILES['report-file']['size'] > 500000) {
+							$reportFileErr = 'File too large to be uploaded, compress or upload another file';
+							$uploadOk = 0;
+						}else {
+							// Allow images and pdf files
+							if($imageFileType != 'jpg' && $imageFileType != 'png' && $imageFileType != 'pdf' && $imageFileType != 'jpeg'){
+								$reportFileErr = 'Only images and pdf files are allowed';
+								$uploadOk = 0;
+							}else {
+								// Check if error is set to 0 by an error
+								if ($uploadOk == 0){
+									$reportFileErr = 'Your file was not uploaded';
+								}else {
+									//Upload the file if everything is okay
+									if (move_uploaded_file($_FILES['report-file']['tmp_name'], $target_file)){
+										$reportFile = basename($_FILES['report-file']['name']);
+									}else{
+										$reportFileErr = 'Sorry there was an error uploading your file';
+									}
+								}
+							}
+						}
+					}else{
+						$reportFileErr = 'Report already exists';
+						$uploadOk = 1;
+					}
+				}else{
+					$reportFileErr = 'Please upload an image or a document';
+					$uploadOk = 0;
+				}
+			}
+		}
+	}
+	if (isset($_POST['upload-report'])){
+		if(empty($_POST['report-email'])){
+			$reportemailErr = 'Please enter the email address of the patient';
+		}elseif(!empty($_POST['report-email'])){
+			$reportemail = test_inputs($_POST['report-email']);
+			$reportemail = filter_input(INPUT_POST, 'report-email', FILTER_SANITIZE_EMAIL);
+		}
+	}
+	if (isset($_POST['upload-report'])){
+		if(empty($_POST['report-comment'])){
+			$reportcommentErr = 'Please write a comment regarding the report';
+		}elseif(!empty($_POST['report-comment'])){
+			$reportComment = test_inputs($_POST['report-comment']);
+			$reportComment = filter_input(INPUT_POST, 'report-comment', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		}
+	}
+	if(empty($reportErr) && empty($reportAmountErr) && empty($reportnameErr) && empty($reportDateErr) && empty($laboratoryErr) && empty($reportFileErr) && empty($reportnameErr) && empty($statusErr) && empty($reportemailErr) && empty($reportcommentErr))
+	{
+		try{
+			$request = "INSERT INTO reports (patient_name, priority ,date_of_report, patient_email, laboratory, report_comment, report_amount, report_status, report_image)
+			VALUES (:patient_name,:priority,:date_of_report,:patient_email, :laboratory,:report_comment,:report_amount, :report_status, :report_image)";
+			$query = $conn->prepare($request);
+			$query->bindParam(':patient_name', $reportName);
+			$query->bindParam(':priority', $reportPriority);
+			$query->bindParam(':patient_email', $reportemail);
+			$query->bindParam(':laboratory', $lab);
+			$query->bindParam(':report_status', $reportStatus);
+			$query->bindParam(':report_comment', $reportComment);
+			$query->bindParam(':report_amount', $reportAmount);
+			$query->bindParam(':report_image', $reportFile);
+			$query->bindParam(':date_of_report', $reportDate);
+			if ($query->execute() == TRUE)
+			{
+				$booking = '<div class="alert success"><span class="closebtn">Report uploaded succesfully</span></div>';
+			}else {
+				$booking =  '<div class="alert warning"><span class="closebtn">Report not uploaded, please try again</span></div>';
+			}
+		} catch(PDOException $e){
+			$formErr = "Internal server error.";
+		}
+	} 
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="http-equiv" content="30">
+<head> 
+	<meta charset="UTF-8"> 
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+	<meta name="viewport" content="width=device-width,  initial-scale=1.0"> 
+	<title>Santi Health - Adminpanel</title> 
+	<link rel="stylesheet" href="includes/styles/dashboard2.css"> 
+	<link rel="stylesheet" href="includes/styles/responsiive.css">
 	<link rel="icon" type="images/x-icon" href="includes/images/white.JPG">
-	<link rel="stylesheet" href="w3.css" />
-	<link rel="stylesheet" href="includes/styles/dashboard.css" />
 	<script src="includes/main.js"></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<title>Santi Admin Dashboard</title>
-</head>
-<body>
-<div class="parent">
-	<div class="" id="mySidebar">
-	  <button id="closeNav" class="w3-bar-item w3-button w3-large" onclick="w3_close()">&times;</button><br>
-	 <ul>
-
-	<h1><a href="" style="text-decoration: none;">Santi Health Admin panel</a></h1>
-	 <li><button onclick="showPatients()">List of patients</button></li>
- 	 <li><button onclick="showDoctors()">Medical Officials</button></li>
-	  <li><button onclick="registerDoc()">Medical officers registration</button></li>
- 	 <li><button onclick="viewRecords()">Patient's records</button></li>
- 	 <li><button onclick="viewBills()">Bills and receipts</button></li>
- 	 <li><button onclick="">Updates and uploads</button></li>
- 	 <li><button onclick="liveSessions()">Live sessions</button></li>
- 	 <li><button onclick="pharmacies()">Pharmacy and deliveries</button></li>
- 	 <li><button onclick="showServices()">Homecare services</button></li>
-</ul>
-	</div>
-	<div id="main">
-	<div id="navbar">
-	<button id="openNav" class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
-	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head> 
+<body> 
 	<header>
-		<img src="includes/images/santi2.png" alt="avatar" width="10%">
-		<a href="logout.php">Logout</a>
-		<a href="logout.php">Notifications</a>
-		<a href=""><b><?php echo $profile ?></b></a>
-			<button onclick="darkmode()" class="theme-toggle"></button>
-	</header>
-		<main id="main_content">
-			<div class="page" id="home-page">
-			<div class="appointment">
-			<div class="box-container"> 
-  <div class="box box1" style="background-image: url('includes/images/patient.jpeg');background-position:center;background-size:cover;"> 
-	  <div class="text"> 
-		  <h2 class="topic-heading">Doctor of the day</h2> 
-		  <h2 class="topic">Dr. Mito Harris</h2> 
-	  </div> 
+	<div class="icn menuicn" id="menuicn" alt='menu-icon'>
+	<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+</svg> 
+</div>
+		<div class="logosec"> 
+			<div class="logo"><img src="includes/images/white.JPG" width="15%"></div> 
+		</div>
+		<span class="notification" id="notification" onclick="document.getElementById('notification').style.display = 'none'">
+		</span>
+		<?php if ($booking != '' || !empty($booking)): ?>
+			<?php echo $booking ?? NULL ?>
+		<?php endif ?>
+		</center>
+		<div class="searchbar">
+		<form method="GET" action="adminpanel.php">
+			<input type="text" placeholder="Search..." onkeyup="searchFunction(this.value)" id="textinput">
+			</form>
+			<p>
+				<span id="txtHint"></span>	
+			</p>
+		</div>
+		<div class="message">
+	<div class="dropdown">
+    <button class="dropbtn">			
+	<div class="name" id="profilename" style="display: none;"><?php echo htmlspecialchars($profile)?></div>
+	<img src= "includes/images/avatar.jpeg" title="<?php echo htmlspecialchars($profile) ?>" class="dpicn" alt="dp" style="border: 4px solid green;border-radius:20px">
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="doctorchangepassword.php">Change Password</a>
+	  <hr>
+	  <center>
+	  <a href="logout.php">Logout</a>
+	  </center>
+    </div>
   </div> 
-  <div class="box-container"> 
-			<div class="box box2"> 
-                    <div class="text"> 
-                        <h2 class="topic-heading">150</h2> 
-                        <h2 class="topic">Logged-in staff</h2> 
-                    </div> 
-			</div>
-                <div class="box box3"> 
-                    <div class="text"> 
-                        <h2 class="topic-heading">320</h2> 
-                        <h2 class="topic">Patients attended to today</h2> 
-                    </div> 
-                </div> 
-  
-                <div class="box box4"> 
-                    <div class="text"> 
-                        <h2 class="topic-heading">70</h2> 
-                        <h2 class="topic">Articles Published</h2> 
-                    </div> 
-			</div>
-			</div>
-			</div>
-			</div>
-            <div class="report-container"> 
-                <div class="report-header"> 
-                    <h1 class="recent-Articles">Recent Articles</h1> 
-                    <button class="view">View All</button> 
-                </div> 
-  
-                <div class="report-body"> 
-                    <div class="report-topic-heading"> 
-                        <h3 class="t-op" style="color: purple;">Article</h3> 
-                        <h3 class="t-op" style="color: purple;">Views</h3> 
-                        <h3 class="t-op" style="color: purple;">Comments</h3> 
-                        <h3 class="t-op" style="color: purple;">Status</h3> 
-                    </div> 
-  
-                    <div class="items"> 
-                        <div class="item1"> 
-                            <h3 class="t-op-nextlvl" style="color: purple;">Article 73</h3> 
-                            <h3 class="t-op-nextlvl" style="color: purple;">2.9k</h3> 
-                            <h3 class="t-op-nextlvl" style="color: purple;">210</h3> 
-                            <h3 class="t-op-nextlvl label-tag" style="color: purple;">Published</h3> 
-                        </div> 
-                        <div class="item1"> 
-                            <h3 class="t-op-nextlvl">Article 72</h3> 
-                            <h3 class="t-op-nextlvl">1.5k</h3> 
-                            <h3 class="t-op-nextlvl">360</h3> 
-                            <h3 class="t-op-nextlvl label-tag">Published</h3> 
-                        </div> 
-                        <div class="item1"> 
-                            <h3 class="t-op-nextlvl">Article 71</h3> 
-                            <h3 class="t-op-nextlvl">1.1k</h3> 
-                            <h3 class="t-op-nextlvl">150</h3> 
-                            <h3 class="t-op-nextlvl label-tag">Published</h3> 
-                        </div> 
-                        <div class="item1"> 
-                            <h3 class="t-op-nextlvl">Article 70</h3> 
-                            <h3 class="t-op-nextlvl">1.2k</h3> 
-                            <h3 class="t-op-nextlvl">420</h3> 
-                            <h3 class="t-op-nextlvl label-tag">Published</h3> 
-                        </div> 
-                        <div class="item1"> 
-                            <h3 class="t-op-nextlvl">Article 69</h3> 
-                            <h3 class="t-op-nextlvl">2.6k</h3> 
-                            <h3 class="t-op-nextlvl">190</h3> 
-                            <h3 class="t-op-nextlvl label-tag">Published</h3> 
-                        </div> 
-  
-                        <div class="item1"> 
-                            <h3 class="t-op-nextlvl">Article 68</h3> 
-                            <h3 class="t-op-nextlvl">1.9k</h3> 
-                            <h3 class="t-op-nextlvl">390</h3> 
-                            <h3 class="t-op-nextlvl label-tag">Published</h3> 
-                        </div> 
-  
-                        <div class="item1"> 
-                            <h3 class="t-op-nextlvl">Article 67</h3> 
-                            <h3 class="t-op-nextlvl">1.2k</h3> 
-                            <h3 class="t-op-nextlvl">580</h3> 
-                            <h3 class="t-op-nextlvl label-tag">Published</h3> 
-                        </div> 
-  
-                        <div class="item1"> 
-                            <h3 class="t-op-nextlvl">Article 66</h3> 
-                            <h3 class="t-op-nextlvl">3.6k</h3> 
-                            <h3 class="t-op-nextlvl">160</h3> 
-                            <h3 class="t-op-nextlvl label-tag">Published</h3> 
-                        </div> 
-                        <div class="item1"> 
-                            <h3 class="t-op-nextlvl">Article 65</h3> 
-                            <h3 class="t-op-nextlvl">1.3k</h3> 
-                            <h3 class="t-op-nextlvl">220</h3> 
-                            <h3 class="t-op-nextlvl label-tag">Published</h3> 
-                        </div> 
-  
-                    </div> 
-                </div> 
-			</div>
-		</main>
-		<div class="charge-sheet" id="charge-sheet">
-			<h3>Hello <?php echo $fname ?>, here is a list of our registered patients</h3>
+		</div> 
+	</header> 
+	<div class="main-container" id="content"> 
+		<div class="navcontainer">
+			<script>
+				var menuicn = document.querySelector(".menuicn");
+				var nav = document.querySelector(".navcontainer");
+				menuicn.addEventListener("click", () => {
+					nav.classList.toggle("navclose");
+				});
+			</script>
+			<nav class="nav"> 
+				<div class="nav-upper-options"> 
+				<button class="nav-option option1" onclick="Dashboard()">
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-menu-app" viewBox="0 0 16 16">
+  <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5"/>
+</svg> 
+						<h3>Dashboard</h3> 
+						</button>
+					<button class="option2 nav-option" onclick="showDoctors()">
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+</svg>
+						<h3>Registered Members</h3>
+					</button> 
+					<button class="nav-option option3" onclick="reports()"> 
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-paperclip nav-img" viewBox="0 0 16 16">
+  <path d="M4.5 3a2.5 2.5 0 0 1 5 0v9a1.5 1.5 0 0 1-3 0V5a.5.5 0 0 1 1 0v7a.5.5 0 0 0 1 0V3a1.5 1.5 0 1 0-3 0v9a2.5 2.5 0 0 0 5 0V5a.5.5 0 0 1 1 0v7a3.5 3.5 0 1 1-7 0z"/>
+</svg>
+						<h3>Registered staff</h3>
+					</button> 
+					<button class="nav-option option4" onclick="sessions()"> 
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-webcam" viewBox="0 0 16 16">
+  <path d="M0 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H9.269c.144.162.33.324.531.475a7 7 0 0 0 .907.57l.014.006.003.002A.5.5 0 0 1 10.5 13h-5a.5.5 0 0 1-.224-.947l.003-.002.014-.007a5 5 0 0 0 .268-.148 7 7 0 0 0 .639-.421c.2-.15.387-.313.531-.475H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z"/>
+  <path d="M8 6.5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m7 0a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
+</svg>
+						<h3>Ongoing Sessions</h3> 
+					</button> 
 
-			<div class="charge-table">
-				<table>
+					<button class="nav-option option6" onclick="schedules()"> 
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-lines-fill" viewBox="0 0 16 16">
+  <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z"/>
+</svg>
+						<h3> Register Member</h3> 
+					</button>
+					<button class="nav-option option6" onclick="labreports()"> 
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-calendar2-range" viewBox="0 0 16 16">
+  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/>
+  <path d="M2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5zM9 8a1 1 0 0 1 1-1h5v2h-5a1 1 0 0 1-1-1m-8 2h4a1 1 0 1 1 0 2H1z"/>
+</svg>
+						<h3>Upload Lab reports</h3> 
+					</button>
+					<button class="nav-option option6" onclick="payment()">
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-credit-card-fill" viewBox="0 0 16 16">
+  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0zm0 3v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7zm3 2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1"/>
+</svg>
+						<h3>Initiate payment</h3>
+					</button>
+				<a href="logout.php"><div class="nav-option logout"> 
+						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="nav-img bi bi-box-arrow-right" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+  <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+</svg>
+						<h3>Logout</h3> 
+					</div> 
+				</a>
+				</div> 
+			</nav> 
+		</div> 
+			<div class="main" id="main_content">
+			<div class="box-container"> 
+				<div class="box box1"> 
+					<div class="text">
+						<h2 class="topic-heading"><?php echo htmlspecialchars($totalRooms ?? NULL);?></h2> 
+						<h2 class="topic"></h2>
+					</div> 
+					<svg style="color: white;" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+</svg>
+				</div> 
+				<div class="box box2"> 
+					<div class="text"> 
+						<h2 class="topic-heading">150</h2> 
+						<h2 class="topic">Logged-in staff</h2> 
+					</div> 
+					<svg style="color: white;" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+</svg>
+				</div> 
+				<div class="box box3"> 
+					<div class="text"> 
+						<h2 class="topic-heading">320</h2> 
+						<h2 class="topic">Patient-doctor interactions</h2> 
+					</div> 
+					<svg style="color: white;" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-chat-right-text-fill" viewBox="0 0 16 16">
+  <path d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9.586a1 1 0 0 1 .707.293l2.853 2.853a.5.5 0 0 0 .854-.353zM3.5 3h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1m0 2.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1m0 2.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1"/>
+</svg>
+				</div>
+				<div class="box box4">
+					<div class="text"> 
+						<h2 class="topic-heading">60.5k Online sessions</h2> 
+						<h2 class="topic">300 Patients seen as of today</h2> 
+					</div> 
+					<svg style="color: white;" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-check-all" viewBox="0 0 16 16">
+  <path d="M8.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L2.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093L8.95 4.992zm-.92 5.14.92.92a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 1 0-1.091-1.028L9.477 9.417l-.485-.486z"/>
+</svg>
+				</div>
+				<hr>
+				<h2>Doctors data</h2>
+				<?php 
+					$getAll = $conn->prepare("SELECT * FROM santi_data");
+					$getAll->execute();
+					$getAll->setFetchMode(PDO::FETCH_ASSOC);
+					foreach($getAll as $officialdata){
+						?>
+				<div class="box box4"id="doctors_box">
+				<div class="text" >
+						<h2 class="topic-heading"><?php echo  'Dr. '.htmlspecialchars($officialdata['fname'].' '.$officialdata['sname']) ?? NULL; ?></h2> 
+						<h2 class="topic"><?php echo htmlspecialchars($officialdata['faculty']) ?? NULL; ?></h2> 
+					</div> 
+				</div>
+				<?php } ?>
+			</div>
+			<div class="report-container"> 
+				<div class="report-header"> 
+					<h1 class="recent-Articles">Today's bookings</h1> 
+					<button class="view">View All</button> 
+				</div> 
+				<div class="report-body"> 
+					<div class="report-topic-heading"> 
+						<h3 class="t-op">Doctor's name</h3> 
+						<h3 class="t-op">Date of visit</h3> 
+						<h3 class="t-op">Priority</h3> 
+					</div> 
+					<?php 
+					foreach($date_querys as $todays_jobs){
+						$leo = $todays_jobs['date_of_schedule'];
+						$lseo1 = $todays_jobs['doc_name'];
+						$lseo2 = $todays_jobs['confirmation'];
+					?>
+							<div class="item1">
+							<h3 class="t-op-nextlvl"><?php echo htmlspecialchars($lseo1)?></h3> 
+							<h3 class="t-op-nextlvl"><?php echo htmlspecialchars($leo)?></h3> 
+							<h3 class="t-op-nextlvl label-tag"><?php echo htmlspecialchars($lseo2)?></h3> 
+						</div> 
+						<?php } if (empty($leo)) echo '<center>No bookings for today</center>'; ?>
+					</div> 
+				</div> 
+			</div>
+			<div class="doctors-profile" id="doctors-profile">
+			<table id="santiTable">
 						<tr>
 							<th>S. No</th>
 							<th>Date of registration</th>
@@ -197,27 +404,41 @@ if (empty($_SESSION['email']) && empty($_COOKIE['fname']) && empty($_COOKIE['sna
 						?>
 						<tr>
 							<td><?php echo $cnt++ ?></td>
-							<td><?php echo $santidata['registration_date'] ?? NULL ?></td>
-							<td><?php echo $santidata['id'] ?? NULL ?></td>
-							<td><?php echo $santidata['fname'].' '.$santidata['sname'] ?? NULL ?></td>
-							<td><?php echo $santidata['tel'] ?? NULL ?></td>
-							<td><?php echo $santidata['email'] ?? NULL ?></td>
-							<td><?php echo $santidata['residence'] ?? NULL ?></td>
-							<td><?php echo $santidata['status'] ?? NULL ?></td>
-							<td><button>Delete</button></td>
-							<?php } ?>
+							<td><?php echo htmlspecialchars($santidata['registration_date']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($santidata['id']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($santidata['fname'].' '.$santidata['sname']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($santidata['tel']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($santidata['email']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($santidata['residence']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($santidata['status']) ?? NULL ?></td>
+							<td>
+								<form method="POST" action="adminpanel.php">
+								<input type="submit" name="delete_member" value="Delete" style="width: 100%;" onclick="return confirm('Do you really want to delete <?php echo htmlspecialchars($santidata['fname']).'\'s data?'?>')" >
+							</form>
+							</td>
+							<?php
+							$id = htmlspecialchars($santidata['id']) ?? NULL; } 
+							if(isset($_POST['delete_member'])){
+							$sql1=$conn->prepare("DELETE FROM members where id='$id'");
+							if($sql1 -> execute() == TRUE){
+								$booking =  '<div class="alert success"><span class="closebtn">Staff data deleted succesfully</span></div>';
+							}else {
+								$booking = '<div class="alert warning"><span class="closebtn">Data not deleted.</span></div>';
+							}
+							}?>
 						</tr>
 				</table>
 			</div>
-		</div>
-		<div class="labtests" id="labtests">
-		<h3>Hello <?php echo $fname ?>, here is a list of our doctors</h3>
-				<table>
+			<div class="reports" id="reports">
+			<table>
 						<tr>
 							<th>S. No</th>
 							<th>Date of registration</th>
 							<th>Official's name</th>
+							<th>Reg. no.</th>
+							<th>Email</th>
 							<th>Specialist</th>
+							<th>Residence</th>
 							<th>Licence number</th>
 							<th>Gender</th>
 							<th>Status</th>
@@ -232,50 +453,95 @@ if (empty($_SESSION['email']) && empty($_COOKIE['fname']) && empty($_COOKIE['sna
 						?>
 						<tr>
 							<td><?php echo $add++ ?></td>
-							<td><?php echo $officialdata['registration_date'] ?? NULL ?></td>
-							<td><?php echo $officialdata['fname'] .' '. $officialdata['sname'] ?? NULL ?></td>
-							<td><?php echo $officialdata['faculty'] ?? NULL ?></td>
-							<td><?php echo $officialdata['licence'] ?? NULL ?></td>
-							<td><?php echo $officialdata['gender'] ?? NULL ?></td>
-							<td><?php echo $officialdata['status'] ?? NULL ?></td>
-							<td><button>Delete</button></td>
-							<?php } ?>
+							<td><?php echo htmlspecialchars($officialdata['registration_date']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($officialdata['fname'] .' '. $officialdata['sname']) ?? NULL ?></td>
+							<td><?php htmlspecialchars($id = $officialdata['id']); echo htmlspecialchars($officialdata['id']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($officialdata['email']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($officialdata['faculty']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($officialdata['residence']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($officialdata['licence']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($officialdata['gender']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($officialdata['status']) ?? NULL ?></td>
+							<td>
+								<form method="post" action="adminpanel.php">
+								<input type="submit" name="delete_staff" value="Delete" style="width: 100%;" onclick="return confirm('Do you really want to delete <?php echo $santidata['fname'].'\'s data?'?>')" >
+							</form>
+							</td>
+							<?php
+							} 
+							if(isset($_POST['delete_staff'])){
+							$sql1=$conn->prepare("DELETE FROM santi_data where id='$id'");
+							if($sql1 -> execute() == TRUE){
+								$booking = '<div class="alert success"><span class="closebtn">Staff data deleted succesfully</span></div>';
+							}else {
+								$booking = '<div class="alert warning"><span class="closebtn">Data not deleted.</span></div>';
+							}
+							}?>
 						</tr>
 				</table>
 			</div>
-			<div class="imaging" id="imaging">
-			<form method="POST" action="newmember.php" enctype="multipart/form-data">
-					<fieldset>
-					<h1>Enter official's details in this form</h1>
+			<div class="sessions" id="sessions">
+				<div class="box box2" style="background-color: orange;"> 
+					<div class="text"> 
+						<h2 class="topic-heading"><?php echo htmlspecialchars($totalRooms) ?? NULL ?></h2> 
+					</div> 
+					<svg style="color: white;" id="live-pop" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-broadcast" viewBox="0 0 16 16">
+  <path d="M3.05 3.05a7 7 0 0 0 0 9.9.5.5 0 0 1-.707.707 8 8 0 0 1 0-11.314.5.5 0 0 1 .707.707m2.122 2.122a4 4 0 0 0 0 5.656.5.5 0 1 1-.708.708 5 5 0 0 1 0-7.072.5.5 0 0 1 .708.708m5.656-.708a.5.5 0 0 1 .708 0 5 5 0 0 1 0 7.072.5.5 0 1 1-.708-.708 4 4 0 0 0 0-5.656.5.5 0 0 1 0-.708m2.122-2.12a.5.5 0 0 1 .707 0 8 8 0 0 1 0 11.313.5.5 0 0 1-.707-.707 7 7 0 0 0 0-9.9.5.5 0 0 1 0-.707zM10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0"/>
+</svg>
+				</div>
+				<div class="report-header"> 
+					<h1 class="recent-Articles">Available rooms</h1> 
+				</div> 
+				<div class="report-body"> 
+					<div class="report-topic-heading">
+						<h3 class="t-op">Room Id</h3> 
+					</div>
+					<?php
+					$getRooms = $rooms['data'] ?? NULL;
+					foreach($getRooms as $all) {
+						if($getRooms == NULL){
+							echo 'No rooms available';
+						}
+					?>
+					<div class="item1"> 
+							<h3 class="t-op-nextlvl"><?php echo $all['id'] ?? NULL?></h3>
+							<input type="submit" name="delete" value="Delete"><h3 class="t-op-nextlvl label-tag"></h3> 
+						</div> 
+					<?php } ?>
+				</div>
+			</div>
+			<div class="schedules" id="schedules">
+			<h1>Enter official's details in this form</h1>
+			<form method="POST" action="adminpanel.php" enctype="multipart/form-data" id="doctor_form">
 					<label for="Officials first">Official's first name:</label><br>
-					<input type="text" name="ofname" required placeholder="Official's first name" title="Doctor's first name goes here" autocomplete="on" class="form-group <?php echo $ofnameErr ?? NULL?>">
+					<input type="text" name="ofname"  required placeholder="Official's first name" title="Doctor's first name goes here" autocomplete="on" class="form-group <?php echo $ofnameErr ?? NULL?>">
 					<div class="errormessage">
 						<?php echo $ofnameErr ?>
 					</div>
 					<br>
 					<label for="Officials second name">Official's Second name:</label><br>
-					<input type="text" name="osname" required placeholder="Official's second name" title="Doctor's second name goes here" autocomplete="on" class="form-group<?php echo $osnameErr ?? NULL ?>">
+					<input type="text" name="osname"  required placeholder="Official's second name" title="Doctor's second name goes here" autocomplete="on" class="form-group<?php echo $osnameErr ?? NULL ?>">
 					<div class="errormessage">
 						<?php echo $osnameErr ?>
 					</div>
 					<br>
 					<label for="Officials phone number">Doctor's phone number:</label><br>
-					<input type="text" name="tel" required placeholder="07xxxxxxxx" title="Doctor's phone number goes here" autocomplete="on" class="form-group<?php echo $pnumberErr ?? NULL?>">
+					<input type="text" name="tel"  required placeholder="07xxxxxxxx" title="Doctor's phone number goes here" autocomplete="on" class="form-group<?php echo $pnumberErr ?? NULL?>">
 						<div class="errormessage">
 							<?php echo $pnumberErr ?>
 						</div>
 					<br>
 					<label for="Officials email address">Doctor's Email Address:</label><br>
-					<input type="text" name="email" required placeholder="name@example.com" title="Doctor's Email Address goes here" autocomplete="on" class="form-group<?php echo $emailErr ?? NULL?>">
+					<input type="text" name="email"  required placeholder="name@example.com" title="Doctor's Email Address goes here" autocomplete="on" class="form-group<?php echo $emailErr ?? NULL?>">
 						<div class="errormessage">
 							<?php echo $emailErr ?>
 						</div>
 					<br>
 					<label for="official's_licence">Doctor's license number:</label><br>
-					<input type="text" name="licence" required placeholder="Official's license number" title="Official's licence number goes here">
+					<input type="text" name="licence"  required placeholder="Official's license number" title="Official's licence number goes here">
 					<br>
 					<label for="Official's residence">County of residence:</label><br>
-					<input type="text" name="residence" required placeholder="Official's county of residence" title="Official's licence number goes here">
+					<input type="text" name="residence"  required placeholder="Official's county of residence" title="Official's licence number goes here">
 					<br>
 					<label for="Official's">Official's Faculty</label></br>
 					<select class="doctors-selection" id="Faculty" name="faculty" required style="float: left; width:50%">
@@ -302,7 +568,7 @@ if (empty($_SESSION['email']) && empty($_COOKIE['fname']) && empty($_COOKIE['sna
 						</div>
 					<br>
 					<label for="Official's residence">Charges:</label><br>
-					<input type="text" name="price" required placeholder="Charges in Ksh." title="Official's charge of service goes here">
+					<input type="text" name="price"  required placeholder="Charges in Ksh." title="Official's charge of service goes here">
 					<br>
 					<label for="Gender">Doctor's gender:</label><br>
 					<label for="male">Male:</label>
@@ -313,200 +579,52 @@ if (empty($_SESSION['email']) && empty($_COOKIE['fname']) && empty($_COOKIE['sna
 							<?php echo $genderErr ?>
 						</div>
 					<br>
-					<label for="doctor's note">Doctor's experience</label>
-					<br>
-					<input type="textarea" name="doctors_notes" placeholder="Type the officials work experience here..." autocomplete="off" width="100px" height="100px">
-					<br>
-					<label for="Official's residence">Your password:</label><br>
+					<label for="Official's password">Officer's temporary password:</label><br>
 					<input type="password" id="psw" name="password" required placeholder="Password" title="Official's licence number goes here" class="form-group<?php echo $passwordErr ??  NULL ?>">
 					<div class="errormessage">
 						<?php echo $passwordErr ?>
 					</div>
 					<br>
 					<input type="checkbox" onclick="showpsd()">Show password
-				<script>
-				function showpsd() {
-					var x = document.getElementById("psw");
-					if (x.type === "password") {
-						x.type = "text";
-					} else {
-						x.type = "password";
-					}
-				}
-				</script>
 				<div id="message">
 					<h3>Password must contain the following:</h3>
 					<p id="letter" class="invalid">A <b>lowecase</b> letter</p>
 					<p id="capital" class="invalid">An <b>Uppercase</b> letter</p>
 					<p id="number" class="invalid">A <b>number</b></p>
 					<p id="length" class="invalid">Minimum of <b>8 characters</b></p>
-				</div>
-					<center>
-						<input type="submit" name="submit" value="submit">
-					</center>
-			</div>
-				</fieldset>
-				</form>
-			<br>	
-			</div>
-			<div class="reviews" id="reviews">
-			<h3>Hello <?php echo $fname ?>, Here are the medical records of our patients</h3>
-			<table>
-						<tr>
-							<th>Date of registration</th>
-							<th>Date of review</th>
-							<th>Name of the patient</th>
-							<th>Attending medical officer</th>
-							<th>Reason for Attention</th>
-							<th>Date of next review</th>
-							<th>Recommendations</th>
-						</tr>
-						<tr>
-							<td>12/06/2024</td>
-							<td>14/09/2025</td>
-							<td>Steven Oloo</td>
-							<td>Dr. Daniel Omollo (specialist)</td>
-							<td>Malaria</td>
-							<td>04/10/2025</td>
-							<td>Dosage of Doxycyclone 500mg</td>
-						</tr>
-				</table>
-			</div>
-			<div class="updates" id="updates">
-			<h3>Hello <?php echo $fname ?>, here are live session </h3>
-			<div class="liveNode">
-				<div class="redDot"></div> Live<br>
-				<span class="patientNode">
-					<img src="includes/images/santi.PNG" alt="avatar.jpg" width="10%" height="10%">
-				<p>Dr. Daniel Osoro</p>
-				</span>
-				<br>
-				<center>
-				<span class="pointer" style="color:white">
-					<p>>>>><br>
-					<<<<
-					</p>
-				</span>
-				</center>
-				<span class="doctorNode">
-				<img src="includes/images/santi.PNG" alt="avatar.jpg" width="10%" height="10%">
-				<p>Steven Mwaniki</p>	
-			</span>
-				<button>End Session</button>
-			</div>
-			</div>
-			<div class="seminors" id="seminors">
-			<h3>Hello <?php echo $fname ?>, Here is our Accounts</h3>
-			<table>
-						<tr>
-							<th>Date of payment</th>
-							<th>Payment For</th>
-							<th>Time of payment</th>
-							<th>Name of payer</th>
-							<th>Attending Officer</th>
-							<th>Mode of payment</th>
-							<th>Status of payment</th>
-							<th>Sum paid</th>
-							<th>Pending amount</th>
-						</tr>
-						<tr>
-							<td>12/06/2024</td>
-							<td>Consultation</td>
-							<td>12/06/2024 12:06:35</td>
-							<td>Daniel Mwangi</td>
-							<td>Simon Omondi</td>
-							<td>M-pesa</td>
-							<td>Paid</td>
-							<td>12,000</td>
-							<td>0</td>
-						</tr>
-				</table>
-			</div>
-			<div class="pharmacy" id="pharmacy">
-			<h3>Hello <?php echo $fname ?>, Here is a list of our pharmacies that we partner with to give you the best medication</h3>
-			</div>
-			<div class="nurses" id="nurses">
-			<table>
-						<tr>
-							<th>Begin of service</th>
-							<th>Name of Official</th>
-							<th>Position</th>
-							<th>Place of posting</th>
-							<th>Name of Patient</th>
-							<th>Number of visits</th>
-						</tr>
-						<tr>
-							<td>12/06/2024</td>
-							<td>John Karanja</td>
-							<td>Nurse</td>
-							<td>Kariandusi</td>
-							<td>Wachira waruru</td>
-							<td>13</td>
-						</tr>
-						<tr>
-						<td>12/06/2024</td>
-							<td>John Karanja</td>
-							<td>Nurse</td>
-							<td>Kariandusi</td>
-							<td>Wachira waruru</td>
-							<td>13</td>
-						</tr>
-				</table>
-			</div>
-		<div class="doctors-profile" id="doctors-profile">
-		<h1>Doctor's profiles</h1>		
-		<form class="searchbar">
-          <input type="text" name="search" id="searchbox" placeholder="Search for a doctor or specialist"  onkeyup="livesearch()">
-		</form>
-		<span class="ditch">
-			<img src="includes/images/doctor.jpeg" alt="" width="100%">
-			<h3>Name: <b>Dr. Mito Harris</b></h3>
-			<h3>Specialist: General practirioner</h3>
-			<button onclick="document.getElementById('id01').style.display ='block'" style="width:auto">Read more</button>
-		</span>
-		<div class="modal" id="id01">
-				<div class="imgcontainer">
-					<span onclick="document.getElementById('id01').style.display = 'none'" class="close" title="close modal">$times;</span>
-					<img src="includes/images/doctor.jpeg" alt="Avatar" class="avatar">
-				</div>
-				<div class="container">
-					<p>
-						<h3>Name: Dr. Mito Harris</h3> <br>
-						<h3>Speciality:General practitioner</h3>
-						<p>
-							Dr. Mito Harris is a qualified medical practitioner who has both studied and practiced
-							medicine in Kenya. He graduated from the Nairobi university school of medicine class of 
-							2017 and upon graduation Dr. Mito practiced his medicine at Kenyatta uiversity teaching and 
-							referal hospital in Nairobi(KUTRH), Kenyatta national hospital, The Agha Khan University Hospital(Nairobi)
-						</p>
-					</p>
-				<button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbutton">Book appointment</button>
-			</div>
-				</div>
-		</div>
-		</div>
-</div>
-	<script>
-		// search funtion
-		function livesearch(){
-                var input, filter, table, tr, td, i ,txtValue;
-                input = document.getElementById("myInput");
-                filter = input.value.toUpperCase();
-                table = document.getElementById("myTable");
-                tr = table.getElementsByTagName("tr");
-                for(i = 0; i < tr.length; i++){
-                    td = tr[i].getElementsByTagName("td")[1];
-                    if(td){
-                        txtValue = td.textContent || td.innerText;
-                        if(txtValue.toUpperCase().indexOf(filter) >-1){
-                            tr[i].style.display="";
-                        }else{
-                            tr[i].style.display = "none";
-                        }
-                    }
-                }
-            }
-		
+					<script>
+						//Content to reload page
+						$(document).ready(function(){
+							$("#loadContent").click(function(){
+								$("content").load("adminpanel.php");
+							});
+						});
+
+						var close = document.getElementsByClassName('closebtn');
+						var i;
+						for (i=0;i<close.length;i++){
+							close[i].onclick = function(){
+								var div = this.parentElement;
+								div.style.opacity = '0';
+								setTimeout(function(){ div.style.display = "none"}, 600);
+							}
+						}
+
+function searchFunction(str){
+			if (str.length == 0){
+				document.getElementById("txtHint").innerHTML == "";
+				return;
+			} else {
+				var xmlhttp = new XMLHttpRequest();
+				xmlhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						document.getElementById("txtHint").innerHTML = this.responseText;
+					}
+				};
+				xmlhttp.open("GET", "search.php?q=" + str, true);
+				xmlhttp.send();
+			}
+		}
 				//validate password
 var myInput = document.getElementById("psw");
 var letter = document.getElementById("letter");
@@ -561,127 +679,146 @@ myInput.onkeyup = function() {
 		length.classList.add("invalid");
 	}
 }
-		var modal = document.getElementById('id01');
-				window.onclick = function(event) {
-					if (event.target == modal) {
-						modal.style.display = "none";
-					}
-				}
-		if (navigator.onLine == 'false') {
-			document.getElementsByName('body').innerHTML = "Seems you are offline😒."
-		}
-		function darkmode() {
-			var element = document.body;
-			element.classList.toggle("dark-mode")
-			element.classList.toggle("body");
-		}
-		function showPatients() {
-			const chargeSheet = document.getElementById('charge-sheet');
-			chargeSheet.style.display = "block";
-			document.getElementById('main_content').style.display = 'none';
-			document.getElementById('main_content').cloneNode = chargeSheet;
-			document.getElementById('doctors-profile').style.display = 'none';
-			document.getElementById('labtests').style.display = 'none';
-			document.getElementById('seminors').style.display = 'none';
-			document.getElementById('imaging').style.display = 'none';
-			document.getElementById('reviews').style.display = 'none';
-			document.getElementById('nurses').style.display = 'none';
-			document.getElementById('updates').style.display = 'none';
-		}
-		function showDoctors() {
-			const labTests = document.getElementById('labtests');
-			labTests.style.display = "block";
-			document.getElementById('main_content').style.display = 'none';
-			document.getElementById('main_content').cloneNode = labTests;
-			document.getElementById('doctors-profile').style.display = 'none';
-			document.getElementById('charge-sheet').style.display = 'none';
-			document.getElementById('imaging').style.display = 'none';
-			document.getElementById('updates').style.display = 'none';
-			document.getElementById('reviews').style.display = 'none';
-			document.getElementById('nurses').style.display = 'none';
-		}
-		function registerDoc() {
-			const images = document.getElementById('imaging');
-			images.style.display = "block";
-			document.getElementById('main_content').style.display = 'none';
-			document.getElementById('main_content').cloneNode = images;
-			document.getElementById('doctors-profile').style.display = 'none';
-			document.getElementById('charge-sheet').style.display = 'none';
-			document.getElementById('labtests').style.display = 'none';
-			document.getElementById('updates').style.display = 'none';
-			document.getElementById('reviews').style.display = 'none';
-			document.getElementById('nurses').style.display = 'none';
-		}
-		function viewRecords() {
-			const reviews = document.getElementById('reviews');
-			reviews.style.display = "block";
-			document.getElementById('main_content').style.display = 'none';
-			document.getElementById('main_content').cloneNode = reviews;
-			document.getElementById('doctors-profile').style.display = 'none';
-			document.getElementById('charge-sheet').style.display = 'none';
-			document.getElementById('labtests').style.display = 'none';
-			document.getElementById('imaging').style.display = 'none';
-			document.getElementById('updates').style.display = 'none';
-			document.getElementById('seminors').style.display = 'none';
-			document.getElementById('nurses').style.display = 'none';
-		}
-		function liveSessions() {
-			const updates = document.getElementById('updates');
-			updates.style.display = "block";
-			document.getElementById('main_content').style.display = 'none';
-			document.getElementById('main_content').cloneNode = updates;
-			document.getElementById('doctors-profile').style.display = 'none';
-			document.getElementById('labtests').style.display = 'none';
-			document.getElementById('imaging').style.display = 'none';
-			document.getElementById('reviews').style.display = 'none';
-			document.getElementById('seminors').style.display = 'none';
-			document.getElementById('charge-sheet').style.display = 'none';
-			document.getElementById('nurses').style.display = 'none';
-			document.getElementById('pharmacy').style.display = 'none';
-		}
-		function viewBills() {
-			const seminors = document.getElementById('seminors');
-			seminors.style.display = "block";
-			document.getElementById('main_content').style.display = 'none';
-			document.getElementById('main_content').cloneNode = seminors;
-			document.getElementById('doctors-profile').style.display = 'none';
-			document.getElementById('labtests').style.display = 'none';
-			document.getElementById('imaging').style.display = 'none';
-			document.getElementById('reviews').style.display = 'none';
-			document.getElementById('charge-sheet').style.display = 'none';
-			document.getElementById('updates').style.display = 'none';
-			document.getElementById('pharmacy').style.display = 'none';
-			document.getElementById('nurses').style.display = 'none';
-		}
-		function pharmacies() {
-			const pharmacy = document.getElementById('pharmacy');
-			pharmacy.style.display = "block";
-			document.getElementById('main_content').style.display = 'none';
-			document.getElementById('main_content').cloneNode = pharmacy;
-			document.getElementById('doctors-profile').style.display = 'none';
-			document.getElementById('labtests').style.display = 'none';
-			document.getElementById('imaging').style.display = 'none';
-			document.getElementById('reviews').style.display = 'none';
-			document.getElementById('charge-sheet').style.display = 'none';
-			document.getElementById('updates').style.display = 'none';
-			document.getElementById('seminors').style.display = 'none';
-			document.getElementById('nurses').style.display = 'none';
-		}
-		function showServices() {
-			const nurses = document.getElementById('nurses');
-			nurses.style.display = "block";
-			document.getElementById('main_content').style.display = 'none';
-			document.getElementById('main_content').cloneNode = nurses;
-			document.getElementById('doctors-profile').style.display = 'none';
-			document.getElementById('labtests').style.display = 'none';
-			document.getElementById('imaging').style.display = 'none';
-			document.getElementById('reviews').style.display = 'none';
-			document.getElementById('charge-sheet').style.display = 'none';
-			document.getElementById('updates').style.display = 'none';
-			document.getElementById('seminors').style.display = 'none';
-			document.getElementById('pharmacy').style.display = 'none';
-		}
-</script>
+			</script>
+				</div>
+					<center>
+						<input type="submit" name="submit" value="submit" id="loadContent">
+					</center>
+				</form>
+			</div>
+			<div class="labreports" id="labreports">	
+			<form action="adminpanel.php" method="POST" id="doctor_form" enctype="multipart/form-data">
+				<center>
+					<h1>Upload patient report</h1>
+				</center>
+				<label for="task name">Reason for test:</label>
+            <input type="text" id="task" placeholder="Enter reason for test..." autocomplete="off" name="report-name" required>
+			<label for="priority">Priority</label>
+            <select id="priority" name="report-priority">
+                <option value="Top priority">Top Priority</option>
+                <option value="Middle priority">Middle Priority</option>
+                <option value="Low priority">Less Priority</option>
+            </select>
+			<label for="date">Date of report:</label>
+            <input type="datetime-local" id="deadline"  name="report-date" required class="form-group<?php echo $reportnameErr ?? NULL?>">
+			<div class="errormessage">
+				<?php echo $reportnameErr ?>
+			</div>
+			<br>
+			<label for="date">Laboratory:</label>
+            <input type="text" id="deadline" placeholder="Laboratory" name="laboratory" required class="form-group<?php echo $laboratoryErr ?? NULL?>">
+			<div class="errormessage">
+				<?php echo $laboratoryErr?>
+			</div>
+			<label for="date">Status:</label>
+            <select id="priority" name="report-status" required class="form-group<?php echo $statusErr ?? NULL ?>">
+                <option value="Approved">Approved</option>
+                <option value="Not Approved">Not Approved</option>
+            </select>
+			<div class="errormessage">
+				<?php echo $statusErr ?>
+			</div>
+			<label for="date">Amount:</label>
+            <input type="text" id="deadline" placeholder="Approximate amount paid" name="report-amount" required class="form-group<?php echo $reportAmountErr ?? NULL ?>">
+			<div class="errormessage">
+				<?php echo $reportAmountErr ?>
+			</div>
+			<br>
+			<label for="date">Upload file:</label>
+            <input type="file" id="deadline"  name="report-file" required class="form-group<?php echo $reportErr ?? NULL?>">
+			<div class="errormessage">
+				<?php echo $reportErr ?>
+			</div>
+			<br>
+			<label for="date">Patient-email:</label>
+            <input type="email" width="200px" height="200px" id="deadline"  name="report-email" placeholder="name@example.com" required class="form-group<?php echo $reportemailErr ?? NULL ?>">
+			<div class="errormessage">
+				<?php echo $reportemailErr ?>
+			</div>
+			<br>
+			<label for="date">Comments:</label>
+            <input type="textarea" width="200px" height="200px" id="deadline" placeholder="Comments regarding the report..."  name="report-comment" required class="form-group<?php echo $reportcommentErr ?? NULL ?>">
+			<div class="errormessage">
+				<?php echo $reportcommentErr ?>
+			</div>
+			<center>
+            <input type="submit" value="Upload report" id="add-task" name="upload-report">
+			</center>
+			</form>
+			</div>
+			<div class="payment" id="payment">
+			<form action="adminpanel.php" method="POST" id="doctor_form" enctype="multipart/form-data">
+				<center>
+					<h1>Initiate patient payment</h1>
+					<br>
+					<div class="errormessage">
+						<?php echo $reasonErr1 ?>
+					</div>
+				</center>
+				<label for="task name">Reason for payment:</label>
+            <input type="text" id="task" placeholder="Enter reason for payment..." autocomplete="on" name="payment_reason" required class="form-group<?php echo $reasonErr ?? NULL?>">
+			<div class="errormessage">
+				<?php echo $reasonErr ?>
+			</div>
+			<label for="priority">Priority</label>
+            <select id="priority" name="meeting_priority" class="form-group<?php echo $meeting_priorityErr ?? NULL?>">
+                <option value="Top priority">Top Priority</option>
+                <option value="Middle priority">Middle Priority</option>
+                <option value="Low priority">Less Priority</option>
+            </select>
+			<div class="errormessage">
+				<?php echo $meeting_priorityErr ?>
+			</div>
+			<br>
+			<label for="date">Date of payment:</label>
+            <input type="datetime-local" id="deadline"  name="payment_date" required class="form-group<?php echo $payment_dateErr ?? NULL?>">
+			<div class="errormessage">
+				<?php echo $payment_dateErr ?>
+			</div>
+			<label for="date">Patient email:</label>
+            <input type="text" id="deadline" placeholder="name@example.com" name="patient_email" required class="form-group<?php echo $patient_emailErr ?? NULL?>">
+			<div class="errormessage">
+				<?php echo $patient_emailErr ?>
+			</div>
+			<br>
+			<label for="date">Payment Status:</label>
+            <select id="priority" name="payment_status" required class="form-group<?php echo $payment_statusErr ?? NULL ?>">
+                <option value="Approved">Approved</option>
+                <option value="Not Approved">Not Approved</option>
+            </select>
+			<div class="errormessage">
+				<?php echo $payment_statusErr ?>
+			</div>
+			<label for="date">Amount paid:</label>
+            <input type="text" id="deadline" placeholder="Approximate amount paid" name="paid_amount" required class="form-group<?php echo $paid_amountErr ?? NULL ?>">
+			<div class="errormessage">
+				<?php echo $paid_amountErr ?>
+			</div>
+			<br>
+			<label for="date">Doctors' email:</label>
+            <input type="email" width="200px" height="200px" id="deadline"  name="doctors_email" placeholder="name@example.com" required class="form-group<?php echo $doctors_emailErr ?? NULL ?>">
+			<div class="errormessage">
+				<?php echo $doctors_emailErr ?>
+			</div>
+			<br>
+			<label for="date">Confirmation code:</label>
+            <input type="text" width="200px" height="200px" id="deadline" maxlength="10" name="confirmation_code" placeholder="Payment confirmation code" required class="form-group<?php echo $confirmation_codeErr ?? NULL ?>">
+			<div class="errormessage">
+				<?php echo $confirmation_codeErr ?>
+			</div>
+			<br>
+			<label for="date">Patient's phone number:</label>
+            <input type="text" width="200px" height="200px" id="deadline"  name="payment_phone" placeholder="07xxxxxxxx" required class="form-group<?php echo $payment_phoneErr ?? NULL ?>">
+			<div class="errormessage">
+				<?php echo $payment_phoneErr ?>
+			</div>
+			<br>
+			<center>
+            <input type="submit" value="Approve payment" id="add-task" name="approve_payment" id="loadContent">
+			</center>
+			</form>
+			</div>
+	</div>
 </body>
 </html>
 <?php } ?>

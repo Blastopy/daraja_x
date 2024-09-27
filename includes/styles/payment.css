@@ -1,0 +1,92 @@
+@import url(https://fonts.googleapis.com.css?family=Lato:400,100,300,700,900);
+@import url(https://fonts.googleapis.com.css?family=Source+Code+Pro:400,200,300,500,600);
+		* {
+			box-sizing: border-box;
+		}
+		.container {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			flex-direction: column;
+		}
+		html {
+			background-color: rgb(0, 153, 255);
+			font-family: Arial, Helvetica, sans-serif;
+		}
+		.price h1 {
+			background-color: rgb(0, 153, 255);
+			color: white;
+			letter-spacing: 2px;
+			text-align: center;
+		}
+		.card {
+			margin-top: 30px;
+			margin-bottom: 30px;
+			width: 520px;
+		}
+		.card .row{
+			width: 100%;
+			padding: 1rem 0;
+			border-bottom: 1.2px solid #292C58;
+		}
+		.card .row.number {
+			background-color: #242852;
+		}
+		.row > img{
+			top: 30px;
+			border-radius: 10px;
+			object-fit: contain;
+		}
+		.cardholder .info .number {
+			position: relative;
+			margin-left: 40px;
+		}
+		.cardholder .info label, .number .info label {
+			display: inline-block;
+			letter-spacing: 0.5px;
+			color: white;
+			width: 40%;
+		}
+		.cardholder .info input, .number .info input {
+			display: inline-block;
+			width: 50%;
+			background-color: transparent;
+			font-family: 'Source code Pro';
+			border: none;
+			outline: none;
+			margin-left: 1%;
+			color: white;
+		}
+		.cardholder .info input::placeholder, .number .info input::placeholder {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			color: white;
+		}
+		#cardnumber, #cardnumber::placeholder {
+			letter-spacing: 2px;
+			font-size: 16px;
+		}
+		.button button {
+			font-size: 1.2rem;
+			font-weight: 400;
+			letter-spacing: 1px;
+			width: 520px;
+			background-color: #18C2C0;
+			border: none;
+			color: #fff;
+			padding: 18px;
+			border-radius: 5px;
+			outline: none;
+			cursor:pointer;
+			transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+		}
+			.button button:hover {
+				background-color: #15aeac; 
+			}
+			.button button:active {
+				background-color: #139b99; 
+			}
+			.button button i {
+				font-size: 1.2rem;
+				margin-right: 5px; 
+			}

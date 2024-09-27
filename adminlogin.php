@@ -1,4 +1,13 @@
-<?php session_start();
+<?php 
+ini_set('session.cookie_lifetime', 0);
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_strict_mode', 1);
+ini_set('session.use_only_cookie', 1);
+ini_set('session.cookie_secure', 1);
+ini_set('session.entropy_length', 32);
+ini_set('session.hash_function', 'sha256');
+
+session_start();
 include 'includes/config.php';
 $emailErr = $passwordErr = $formErr = '';
 function test_inputs($data){
@@ -41,9 +50,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 				if ($faculty == 'Admin'){
 					$_SESSION['admin'] = $faculty;
 					if (password_verify($password, $hash) == true){
-						setcookie('fname', $fname, secure:true,  httponly:true);
-						setcookie('sname', $sname, secure:true, httponly:true);
-						setcookie('email', $email, secure:true, httponly:true);
+						$method = "AES-256-ECB";
+						$key = 'ab1cde2fg3hi4jk5lmn8opqrstuvwxyz';
+						$encryptingfname = openssl_encrypt($fname, $method, $key, OPENSSL_RAW_DATA);
+						$cipherfname = base64_encode($encryptingfname);
+						$encryptingsname = openssl_encrypt($sname, $method, $key, OPENSSL_RAW_DATA);
+						$ciphersname = base64_encode($encryptingsname);
+						$encryptingemail = openssl_encrypt($email, $method, $key, OPENSSL_RAW_DATA);
+						$cipheremail = base64_encode($encryptingemail);
+						setcookie('fname', $cipherfname, time() + 3600, secure:true, httponly:true);
+						setcookie('sname', $ciphersname, time() + 3600, secure:true, httponly:true);
+						setcookie('email', $cipheremail, time() + 3600, secure:true, httponly:true);
 						$_SESSION["email"] = $email;
 						$status = "logged-in";
 						$query = $conn->prepare("UPDATE santi_data SET status=:status WHERE email=:email");
@@ -55,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 						$passwordErr = 'Invalid password';
 					}
 			} else {
-				$emailErr = "Email doesn't exist";
+				$emailErr = "You are not registered";
 			}
 		}
 		}catch(PDOException $e){
@@ -70,10 +87,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="http-equiv" content="30">
-	<link rel="icon" type="images/x-icon" href="includes/images/white.JPG">
+	<link rel="icon" type="images/x-icon" href="includes/images/santi2.png">
 	<script src="includes/main.js"></script>
 	<link rel="stylesheet" href="w3.css" />	<link type="text/css" rel="stylesheet" href="includes/styles/main.css">
-	<title>Login</title>
+	<title>Santi Health - Admin Login</title>
 </head>
 <body class="form-body">
 	<main class="forms">

@@ -15,6 +15,9 @@ p {
 	font-size: 18px;
 	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+.responsive {
+	display: none;
+}
 .indexNav {
 	position: relative;
 	z-index: 1;
@@ -61,6 +64,7 @@ p {
 	top: 10vh;
 	font-weight: 900px;
 	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	background-blend-mode: color-dodge;
 }
 .present > img {
 	object-fit: cover;
@@ -211,26 +215,56 @@ p {
 .laptop .content > img {
 	object-fit: contain;
  }
- 
+ input[type="textarea"]{
+	padding: 5px;
+	height: 200px;
+	width: 500px;
+	border-radius: 10px;
+}
+ input[type="email"]{
+	padding: 10px;
+	margin: 20px;
+	border-radius: 10px;
+	width: 50%;
+ }
+ input[type="submit"] {
+	position: relative;
+	padding: 10px;
+	width: 20%;
+	background-color: green;
+	color: white;
+	font-size: larger;
+	border-radius: 10px;
+	width: 20%;
+}
+fieldset {
+	box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.6), 0 7px 21px 0 rgba(0, 0, 0, 0.20);
+	border: none;
+	border-radius: 20px;
+}
 /* Center the loader */
 #loader {
-	position: relative;
+	background-image: url('includes/images/santi2.png');
+	object-fit: cover;
+	background-repeat: no-repeat;
+	position: fixed;
 	left: 50%;
-	top: 300px;
+	top: 50%;
+	bottom: 50%;
 	z-index: 1;
 	width: 100px;
 	height: 100px;
 	margin: -76px 0 0 -76px;
-	border: 8px solid #f3f3f3;
+	border: 4px solid purple;
 	border-radius: 50%;
+	border-top: 4px solid blue;
 	-webkit-animation: spin 2s linear infinite;
-	animation: spin 2s linear infinite;
-  }
-
-#loader > img {
+	animation: spin 2s linear infinite;	
+}
+.loader-image {
 	height: 120px;
 	width: 120px;
-	animation: spinlogo 2s linear infinite;
+	animation: spinlogo 2s infinite;
 }
   
   @-webkit-keyframes spin {
@@ -244,7 +278,7 @@ p {
   }
   
 @keyframes spinlogo {
-	0% {transform: rotate(360deg);}
+	0% {transform: rotate(0deg);}
 	100% {transform: rotate(0deg);}
 }
   /* Add animation to "page content" */
