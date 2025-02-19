@@ -4,15 +4,16 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="includes/styles/responsive_index.css">
 	<style type="text/css">
 	footer {
 		display: flex;
 		top: 0px;
 		color: white;
-		background-color: darkolivegreen;
+		background-color: #001F3F;
 		position: relative;
 		font-size: 16px;
-		height: 70vh;
+		height: 90vh;
 		padding: 0;
 		bottom: 0;
 		width: 100%;
@@ -86,12 +87,107 @@
 		right: -600px;
 		top: 100px;
 	}
+	hr {
+		width: 80%;
+	}
+	@media (max-width: 767px) {
+		* {
+			box-sizing: border-box;
+		}
+		html, body {
+			margin: 0;
+			padding: 0;
+		}
+		footer {
+			display: flex;
+			top: 0px;
+			color: white;
+			background-color: #001F3F;
+			position: relative;
+			font-size: 16px;
+			height: 60vh;
+			padding: 0;
+			bottom: 0;
+			width: 100%;
+	}
+	.footer-body {
+		position: relative;
+		display: inline-block;
+		margin-bottom: 0px;
+		padding: 0px;
+		bottom: 0;
+	}
+	.footer-body > div:first-child {
+		font-size: 100%;
+	}
+	.footer-body > ul {
+		list-style-type: none;
+		margin: 0px;
+		padding: 0px;
+	}
+	.footer-body > ul > li > a {
+		color: grey;
+		text-decoration: none;
+		margin-bottom: 7px;
+		font-size: 16px;
+		font-family:'Times New Roman', Times, serif;
+		padding: 10px;
+		margin: 5px;
+	}
+	.footer-header {
+		font-size: 28px;
+		padding: 5px;
+	}
+	.footer-note {
+		position: relative;
+		display: inline;
+		top: -65px;
+		left: 180px;
+		float: right;
+		align-items: center;
+		font-size: 12px;
+		padding: 0px;
+	}
+	table {
+		top: 10px;
+		position: relative;
+		display: inline-block;
+		padding-left: 20px;
+		padding-right: 20px;
+		justify-content: center;
+		width: 50%;
+	}
+	td,th,tr {
+		padding: 1px;
+		margin: 10px;
+		width: 10%;
+		justify-content: center;
+	}
+	.map-image > img{
+		position: relative;
+		top: -170px;
+		float: right;
+		width: 200px;
+		object-fit: cover;
+		right: 20px;
+		padding: 0;
+		margin: 0;
+		border-radius: 0px;
+	}
+	.map-image > p{
+		position: relative;
+		float: right;
+		right: -180px;
+		top: -90px;
+		font-size: 16px;
+	}
+	}
 	</style>
 </head>
 <body>
 	<footer>
 	<div class="footer-body">
-		<div class="footer-header"><img src="includes/images/santi2.png" width="5%" height="5%">Santi Health</div>
+		<div class="footer-header"><img src="includes/images/santi23.png" width="5%" height="5%" alt="santi_logo">Santi Health</div>
 		<table>
 			<tbody>
 					<th><u>Our socials</u></th>

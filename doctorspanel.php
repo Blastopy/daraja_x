@@ -1,5 +1,13 @@
 <?php 
+ob_start();
 date_default_timezone_set('Africa/Nairobi');
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php';
+
+$mail = new PHPMailer(true);
+
 ini_set('session.cookie_lifetime', 0);
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_strict_mode', 1);
@@ -34,9 +42,17 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
 	$secondname = openssl_decrypt($ciphersname, $method, $key, OPENSSL_RAW_DATA);
 	$cookiemail = openssl_decrypt($cipheremail, $method, $key, OPENSSL_RAW_DATA);
 	$email1 = $cookiemail;
-	$profile = $firstname.$secondname;
-	//Delete appointments that are already past today's date
-	if($_SERVER['REQUEST_METHOD'] == 'POST'){
+	$profile = $firstname.' '.$secondname;
+	$linker = '';
+
+	if (isset($_GET['startsession'])){
+		$lseo0 = $email1;
+		$linker = "<a href='invite.php' id='shareLink' target='_blank'>Share link</a>";
+	}else {
+			$linkformErr = '<center><p id="sessionErr">No sessions for today</p></center>';
+		}
+
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	if(isset($_POST['submit'])){
 		if (empty($_POST['task'])) {
 			$taskErr = "Task title cannot be empty";
@@ -92,8 +108,9 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
 <!DOCTYPE html>
 <html lang="en"> 
 <head> 
-	<meta charset="UTF-8"> 
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="refresh" content="30">
 	<meta name="viewport" content="width=device-width,  initial-scale=1.0"> 
 	<title>Santi Health - Doctor's panel</title> 
 	<link rel="stylesheet" href="includes/styles/dashboard2.css"> 
@@ -110,18 +127,14 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
   <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
 </svg> 
 </div>
-		<div class="logosec"> 
+		<div class="logosec">
 			<div class="name" id="profilename" style="display: none;"></div>
 			<div class="logo"><img src="includes/images/white.JPG" width="15%"></div> 
 		</div>
 		<div class="searchbar">
 			<form>
-			<input type="text" placeholder="Search..." id="textinput">
-			<button onclick="searchwords()">Search</button>
+			<input type="text" placeholder="Search..." id="textinput" onkeypress="searchwords()">
 			</form>
-			<p>
-				<span id="txtHint"></span>	
-			</p>
 		</div>
 		<script>
 		function searchwords(){
@@ -154,7 +167,10 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
 			<div class="alert success"><span class="closebtn">You have pending scheduled appointment(s)</span></div>
 		<?php endif ?>
 		</center>
-		<div class="message">
+			<?php if ($linker != ''): ?>
+				<?php echo $linker ?? NULL?>
+			<?php endif ?>
+	<div class="message">
 	<div class="dropdown">
     <button class="dropbtn">			
 	<div class="name" id="profilename" style="display: none;"><?php echo htmlspecialchars($profile)?></div>
@@ -183,9 +199,9 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
 			</script>
 				<div class="nav-upper-options"> 
 				<button class="nav-option option1" onclick="Dashboard()">
-					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-menu-app" viewBox="0 0 16 16">
-  <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5"/>
-</svg> 
+				<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+  <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5"/>
+</svg>
 						<h3>Dashboard</h3> 
 						</button>
 					<button class="option2 nav-option" onclick="showDoctors()">
@@ -207,7 +223,6 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
 </svg>
 						<h3>Sessions</h3> 
 					</button> 
-
 					<button class="nav-option option6" onclick="schedules()"> 
 					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-calendar2-range" viewBox="0 0 16 16">
   <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/>
@@ -275,7 +290,7 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
 					<div class="report-topic-heading"> 
 						<h3 class="t-op">Patients' names</h3> 
 						<h3 class="t-op">Date of visit</h3> 
-						<h3 class="t-op">Priority of visit</h3>
+						<h3 class="t-op">Priority</h3>
 					</div> 
 					<?php 
 							$sql = $conn->prepare('SELECT patient_name, date_of_schedule, confirmation FROM schedules WHERE doc_email=:email');
@@ -302,7 +317,7 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
 			<button onclick="filterSelection('all')" class="filterbtn active">Show all</button>
 			<button onclick="filterSelection('doctors')" class="filterbtn">Doctors and Specialists</button>
 			<button onclick="filterSelection('nurses')" class="filterbtn">Clinical Officers, Nurses and nurse aides</button>
-			</div>	
+		</div>	
 		<script>
 			filterSelection('all')
 			function filterSelection(c) {
@@ -346,20 +361,24 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
 			}
 		</script>
 				<?php 
-				$getAll = $conn->prepare("SELECT * FROM santi_data WHERE faculty='Obs/Gyn' OR faculty='Diabetologist' OR faculty='Senior consultant' OR faculty='General Physician' OR faculty='Peaditrician' OR faculty='Neurologist' OR faculty='Cardiologist'");
+				$getAll = $conn->prepare("SELECT * FROM santi_data WHERE faculty='Obs/Gyn' OR faculty='Diabetologist' OR faculty='Senior consultant' OR faculty='General Physician' OR faculty='Peaditrician' OR faculty='Neurologist' OR faculty='Cardiologist' OR faculty='Psychiatrist' OR faculty='Orthopedic' OR faculty='Nutritionist/Dietician' OR faculty='Urologist'");
 				$getAll->execute();
 				$getAll->setFetchMode(PDO::FETCH_ASSOC);
 				foreach($getAll as $santidata){
 				?>
 		<span class="ditch ditching doctors">
-			<img src="includes/images/doctorslaptop2.jpg" alt="" width="100%" style="object-fit:cover;">
-			<h3>Name: <b>Dr.<input hidden name="name" value="<?php echo $santidata['fname'].' '. $santidata['sname'] ?? NULL;?>"> 
-			<?php echo $santidata['fname'].' '. $santidata['sname'] ?? NULL;?></b></h4>
-			<h3>Specialist:<input hidden name="speciality" value="<?php echo $santidata['faculty']?>">  
-			<?php echo $santidata['faculty']?></h4>
+			<?php if(htmlspecialchars($santidata['gender'] == 'male')) { echo '<img src="includes/images/OIG2.jpeg" alt="doctor" width="100%" style="object-fit:cover;">';} 
+			else echo '<img src="includes/images/doctorslaptop2.jpg" alt="doctor" width="100%" style="object-fit:cover;">';?>
+			<form action="payment.php" method="get">
+			<h3>Name: <b>Dr.<input hidden name="name" value="<?php echo htmlspecialchars($santidata['fname'].' '. $santidata['sname']) ?? NULL;?>">
+			<?php echo htmlspecialchars($santidata['fname'].' '. $santidata['sname']) ?? NULL;?>
+			<?php if ($santidata['status'] == 'logged-in') { echo '<span id="logged-in" title="online"></span>';}else echo '<span id="logged-out" title="offline"></span>'; ?></b></h4>
+			<h3>Specialist:<input hidden name="speciality" value="<?php echo htmlspecialchars($santidata['faculty'])?>">  
+			<?php echo htmlspecialchars($santidata['faculty']) ?? NULL?></h4>
 			<h3>Gender: <?php echo ucfirst($santidata['gender']) ?? NULL ?></h4>
-			<h3>Consultation Fee:<input hidden name="price" value="<?php echo $santidata['price']?>">
-			<?php echo $santidata['price']?></h4>
+			<h3>Consultation Fee:<input hidden name="price" value="<?php echo htmlspecialchars($santidata['price']) ?? NULL?>">
+			<?php echo htmlspecialchars($santidata['price'])?></h4>
+			</form>
 		</span>
 		<?php } 
 		$getAll = $conn->prepare("SELECT * FROM santi_data WHERE faculty='Nurse' OR faculty='Nurse Aide' OR faculty='Clinician'");
@@ -369,13 +388,15 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
 		?>
 		<span class="ditch ditching nurses">
 		<img src="includes/images/nurses.jpg" alt="" width="100%">
-			<h3>Name: <b><input hidden name="name" value="<?php echo $santidata['fname'].' '. $santidata['sname'] ?? NULL;?>"> 
+			<form action="payment.php" method="get">
+			<h3>Name: <b>Dr.<input hidden name="name" value="<?php echo $santidata['fname'].' '. $santidata['sname'] ?? NULL;?>"> 
 			<?php echo $santidata['fname'].' '. $santidata['sname'] ?? NULL;?></b></h4>
 			<h3>Specialist:<input hidden name="speciality" value="<?php echo $santidata['faculty']?>">  
 			<?php echo $santidata['faculty']?></h4>
 			<h3>Gender: <?php echo ucfirst($santidata['gender']) ?? NULL ?></h4>
 			<h3>Consultation Fee:<input hidden name="price" value="<?php echo $santidata['price']?>">
 			<?php echo $santidata['price']?></h4>
+			</form>
 		</span>
 		<?php } ?>
 			</div>
@@ -454,17 +475,37 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
 			</div>
 			</div>
 			<div class="sessions" id="sessions">
-			<center>
-			<?php
-			$session = '<iframe src="'.$embedUrl.' "style="border:none;width:100%;height:460px;background-color: #cad7fda4;" class="digitalsamba" allow="camera; microphone; display-capture; autoplay;"  allowfullscreen="true">
-    		</iframe>';
-					if (!empty($notify)){
-						$search_doc = array_search($email1, $notify['doctors_email'], strict:true);
-						if (!empty($search_doc)){
-							echo "<form method='post' action='santiapi.php'><input type='button' name='start_session' value='Start session'>".$session."</form>";
+				<p>Please select here to get the email of the patient you would like invite for the consultation.</p>
+				<h5>If the email does not show, then the patient has not completed the payment for the session.</h5>
+				<center>
+				<form method="get" action="doctorspanel.php" id="startSession">
+					<input type="submit" name="startsession" value="Start Session">
+				</form>
+				<script>
+					//get if the session is started to stop the page from reloading
+					var startedSession = window.location.search;
+					// const myIframe = document.getElementById('digitalsamba');
+					if (startedSession == '?startsession=Start+Session'){
+							const observer = new MutationObserver(function(mutation, observer) {
+								const targetElement = document.getElementById('digitalsamba');
+								if (targetElement) {
+									document.getElementById('digitalsamba').addEventListener('load', function() {
+										observer.disconnect();
+										window.stop();
+									});
+								}
+							});
+							observer.observe(document, {childList: true, subtree: true});
 						}
-					} else echo $session = "<center><p id='sessionErr'>No sessions for today</p></center>";
-			?>
+				</script>
+				</center>
+			<center>
+			<?php if (strcmp($lseo0, $email1) === 0): ?>
+				<iframe src="<?php echo $embedUrl?>" style="border:none;width:100%;height:460px;background-color: #cad7fda4;" id="digitalsamba" class="digitalsamba" allow="camera; microphone; display-capture; autoplay;"  allowfullscreen="true">
+    		</iframe>
+			<?php else :?>
+				<center><p id='sessionErr'>No sessions for today</p></center>
+			<?php endif ;?>
 			</center>
 			</div>
 			<div class="schedules" id="schedules">
@@ -475,15 +516,16 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
 				</center>
 				<label for="task name">Task name:</label>
             <input type="text" id="task" placeholder="Enter task name..." autocomplete="off" name="task" required>
-			<label for="priority">Priority</label>
+			<label for="priority">Priority:</label>
             <select id="priority" name="priority" >
                 <option value="Top priority">Top Priority</option>
                 <option value="Middle priority">Middle Priority</option>
                 <option value="Low priority">Less Priority</option>
             </select>
-			<label for="date">Date</label>
-            <input type="datetime-local" id="deadline"  name="deadline" required min="<?php echo date('Y-m-d H:i')?>">
 			<center>
+			<label for="date">Date:</label>
+            <input type="datetime-local" id="deadline"  name="deadline" required min="<?php echo date('Y-m-d H:i')?>">
+			<br>
             <input type="submit" value="Add Task" id="add-task" name="submit">
 			</center>
 			</form>
@@ -501,17 +543,17 @@ if (empty($_SESSION['doctors_session']) && empty($_COOKIE['fname']) && empty($_C
 					</div> 
 					<?php 
 							$sql = $conn->prepare('SELECT patient_name, date_of_schedule, confirmation FROM schedules WHERE doc_email=:email');
-							$sql->bindParam(':email', $email);
+							$sql->bindParam(':email', $cookiemail);
 							$sql->execute();
 							$sql->setFetchMode(PDO::FETCH_ASSOC);
 							foreach($sql as $schedules){
-							?>
+								?>
 						<div class="item1">
 							<h3 class="t-op-nextlvl"><?php echo $schedules['patient_name'] ?? NULL ?></h3>
 							<h3 class="t-op-nextlvl"><?php echo $schedules['date_of_schedule'] ?? NULL ?></h3> 
 							<h3 class="t-op-nextlvl label-tag"><?php echo $schedules['confirmation'] ?? NULL ?></h3> 
 						</div> 
-						<?php } if(empty($schedules)){echo 'You have no bookings as of now';}?>
+						<?php } if(empty($schedules)){echo '<center>You have no bookings as of now</center>';}?>
 					</div> 
 				</div> 
         </div>

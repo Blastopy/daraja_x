@@ -48,10 +48,12 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
 	<meta charset="UTF-8"> 
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"> 
 	<meta name="viewport" content="width=device-width,  initial-scale=1.0"> 
+	<meta name="description" content="The best telemedicine platform that links you to your desired doctor ASAP. Your one stop healthcare provider.">
+	<meta name="robots" content="index, follow">
 	<title>Santi Health - Dashboard</title>
 	<link rel="stylesheet" href="includes/styles/dashboard2.css">
 	<link rel="stylesheet" href="includes/styles/responsiive.css">
@@ -64,23 +66,6 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
     <script src="https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.19/offline.min.js"></script>
 </head> 
 <body>
-<div class="responsive">
-	<center>
-	<img src="includes/images/santi2.png" alt="profile" width="300px">
-	</center>
-			<p>Page not configured for your device, please reach us on our whatsapp by clicking this icon 
-			<br>
-			<center>	
-			<a href="https://chat.whatsapp.com/FOcNZQSDgpoEnRC2FtreyZ">
-			<svg xmlns="http://www.w3.org/2000/svg" style="color:green" width="60" height="60" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
-			<path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
-			</svg></a>
-			or reach us through our email address: 
-			<b>info.santihealth@gmail.com</b> 
-			or call us via our 24/7 response tel no: <b>+254(0)710444964</b>
-			</p>
-		</center>
-		</div>
 	<header>
 	<div class="icn menuicn" id="menuicn" alt='menu-icon'>
 	<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
@@ -88,7 +73,7 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 </svg> 
 </div>
 		<div class="logosec">
-			<div class="logo"><img src="includes/images/white.JPG" width="15%"></div> 
+			<div class="logo"><img src="includes/images/santi23.png" alt="santilogo" width="15%"></div> 
 		<script>
 		const offlineTag = document.getElementById('offline');
 		Offline.options = {
@@ -130,6 +115,21 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 <div class="searchbar">
 	<form>
 			<input type="text" placeholder="Search..." onkeyup="searchFunction()" id="textinput">
+			<script>
+				function searchFunction() {
+					var input = document.getElementById('textinput').value
+					input = input.toLowerCase();
+					var x = document.getElementsByClassName('main_container');
+
+					for (i = 0; i < x.length; i++) {
+						if (!x[i].innerHTML.toLowerCase().includes(input)) {
+							x[i].style.display = 'none';
+						}else {
+							x[i].style.display = "list-item";
+						}
+					}
+				}
+			</script>
 	</form>
 		</div>
 		<span class="notification" id="notification" onclick="document.getElementById('notification').style.display = 'none'">
@@ -161,13 +161,39 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 				menuicn.addEventListener("click", () => {
 					nav.classList.toggle("navclose");
 				});
+
+				function setCookie(name, value, days){
+	const expires = new Date(Date.now() + days * 864e5).toUTCString();
+	document.cookie = name + "=" + encodeURIComponent(value) + "; expires=" + expires + "; path=/";
+}
+
+function getCookie(name){
+	return document.cookie.split('; ').find(row => row.startsWith(name + "="))?.split("=")[1];
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+	const buttons = getCookie("button");
+	if(buttons == 'doctors'){
+		showDoctors();
+	}else if(buttons === 'dashboard'){
+		Dashboard();
+	}else if(buttons === 'reports'){
+		reports();
+	}else if (buttons === 'sessions') {
+		sessions();
+	}else if (buttons === 'schedules') {
+		schedules();
+	}else if (buttons === 'payment') {
+		payment();
+}
+});
 			</script>
 			<nav class="nav">
 				<div class="nav-upper-options"> 
 				<button class="nav-option option1" onclick="Dashboard()">
-					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-menu-app" viewBox="0 0 16 16">
-  <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5"/>
-</svg> 
+				<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+  <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5"/>
+</svg>
 						<h3>Dashboard</h3> 
 						</button>
 					<button class="option2 nav-option" onclick="showDoctors()">
@@ -193,7 +219,7 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-capsule-pill" viewBox="0 0 16 16">
   <path d="M11.02 5.364a3 3 0 0 0-4.242-4.243L1.121 6.778a3 3 0 1 0 4.243 4.243l5.657-5.657Zm-6.413-.657 2.878-2.879a2 2 0 1 1 2.829 2.829L7.435 7.536zM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8m-.5 1.042a3 3 0 0 0 0 5.917zm1 5.917a3 3 0 0 0 0-5.917z"/>
 </svg>
-			<h3>Pharmacy and Laboratory</h3> 
+			<h3>Pharmacy and Laboratory</h3>
 					</button> 
 				<a href="logout.php"><div class="nav-option logout">
 						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="nav-img bi bi-box-arrow-right" viewBox="0 0 16 16">
@@ -207,6 +233,9 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 			</nav> 
 		</div> 
 			<div class="main" id="main_content">
+				<p style="display:none" class="dash-intro">
+					Here you book your appointment with your doctor, make payment, check on the status of your account and interact with our 24/7 support team 
+				</p>
 			<div class="box-container"> 
 				<div class="box box1">
 					<div class="text"> 
@@ -246,169 +275,77 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 </svg>
 				</div> 
 			</div>
-			<div class="report-container"> 
+			<div class="report-container">
 				<div class="report-header"> 
-					<h1 class="recent-Articles">Emergency Ambulance services in Kenya</h1> 
-					<button class="view">View All</button> 
+					<h1 class="recent-Articles">How to navigate santi App</h1> 
+					<button class="view"><?php echo htmlspecialchars(date('H:i'))?></button> 
 				</div> 
-				<div class="report-body"> 
-					<div class="report-topic-heading"> 
-						<h3 class="t-op">S. No</h3> 
-						<h3 class="t-op">Agency name.</h3> 
-						<h3 class="t-op">Telephone number</h3> 
-					</div> 
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">1.</h3> 
-							<h3 class="t-op-nextlvl">Ivory Ambulance</h3> 
-							<h3 class="t-op-nextlvl">0726998880</h3> 
-						</div> 
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">2.</h3> 
-							<h3 class="t-op-nextlvl">Nairobi East Hospital</h3> 
-							<h3 class="t-op-nextlvl">0111435797</h3> 
-						</div> 
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">3.</h3> 
-							<h3 class="t-op-nextlvl">Eplus</h3> 
-							<h3 class="t-op-nextlvl">0700395395</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">4.</h3> 
-							<h3 class="t-op-nextlvl">A.A.R</h3> 
-							<h3 class="t-op-nextlvl">0725225225</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">5.</h3> 
-							<h3 class="t-op-nextlvl">St. John Ambulance</h3> 
-							<h3 class="t-op-nextlvl">0721225285</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">6.</h3> 
-							<h3 class="t-op-nextlvl">RFH</h3> 
-							<h3 class="t-op-nextlvl">0741574782</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">7.</h3> 
-							<h3 class="t-op-nextlvl">OCOA</h3> 
-							<h3 class="t-op-nextlvl">0758692000</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">8.</h3> 
-							<h3 class="t-op-nextlvl">Eureka</h3> 
-							<h3 class="t-op-nextlvl">0712222547</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">9.</h3> 
-							<h3 class="t-op-nextlvl">Moshi Ambulance</h3> 
-							<h3 class="t-op-nextlvl">0792274997</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">10.</h3> 
-							<h3 class="t-op-nextlvl">Lifemed</h3> 
-							<h3 class="t-op-nextlvl">0708188085</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">11.</h3> 
-							<h3 class="t-op-nextlvl">EOC</h3> 
-							<h3 class="t-op-nextlvl">1508</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">12.</h3> 
-							<h3 class="t-op-nextlvl">Eagle Rescue Ambulance</h3> 
-							<h3 class="t-op-nextlvl">0727498805</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">13.</h3> 
-							<h3 class="t-op-nextlvl">Arrow Ambulance</h3> 
-							<h3 class="t-op-nextlvl">0723623880</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">14.</h3> 
-							<h3 class="t-op-nextlvl">Nyanchwa Ambulance Kisii</h3> 
-							<h3 class="t-op-nextlvl">0723623880</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">15.</h3> 
-							<h3 class="t-op-nextlvl">Prodigy Ambulance</h3> 
-							<h3 class="t-op-nextlvl">0713644686</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">16.</h3> 
-							<h3 class="t-op-nextlvl">Lifeline Ambulance</h3> 
-							<h3 class="t-op-nextlvl">0700024764</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">17.</h3> 
-							<h3 class="t-op-nextlvl">VHS Ambulance</h3> 
-							<h3 class="t-op-nextlvl">0702610657</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">18.</h3> 
-							<h3 class="t-op-nextlvl">Red cross</h3> 
-							<h3 class="t-op-nextlvl">1199</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">19.</h3> 
-							<h3 class="t-op-nextlvl">Neema Ambulance Kahawa Sukari</h3> 
-							<h3 class="t-op-nextlvl">0759263586</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">20.</h3> 
-							<h3 class="t-op-nextlvl">Morning star Ambulance</h3> 
-							<h3 class="t-op-nextlvl">0758803688</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">21.</h3> 
-							<h3 class="t-op-nextlvl">Ladnan Hospital</h3> 
-							<h3 class="t-op-nextlvl">0707000730</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">22.</h3> 
-							<h3 class="t-op-nextlvl">Nairobi Women's Kitengela</h3> 
-							<h3 class="t-op-nextlvl">0717723677</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">23.</h3> 
-							<h3 class="t-op-nextlvl">King David Hospital Ambulance</h3> 
-							<h3 class="t-op-nextlvl">0798672797</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">24.</h3> 
-							<h3 class="t-op-nextlvl">Quick Safe Ambulance Nairobi</h3> 
-							<h3 class="t-op-nextlvl">0721853796</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">25.</h3> 
-							<h3 class="t-op-nextlvl">Nairobi Women's Nakuru</h3> 
-							<h3 class="t-op-nextlvl">0707957840</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">26.</h3> 
-							<h3 class="t-op-nextlvl">First Responder</h3> 
-							<h3 class="t-op-nextlvl">0792005351</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">27.</h3> 
-							<h3 class="t-op-nextlvl">Radiant Hospital Ambulance</h3> 
-							<h3 class="t-op-nextlvl">0725532000</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">28.</h3> 
-							<h3 class="t-op-nextlvl">Avenue Parklands</h3> 
-							<h3 class="t-op-nextlvl">0711060150/0711060175</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">29.</h3> 
-							<h3 class="t-op-nextlvl">Avenue Thika</h3> 
-							<h3 class="t-op-nextlvl">0711060800/0715869147</h3> 
-						</div>
-						<div class="item1"> 
-							<h3 class="t-op-nextlvl">30.</h3> 
-							<h3 class="t-op-nextlvl">Rescuemed</h3>
-							<h3 class="t-op-nextlvl">0722805645</h3>
-						</div>
-					</div> 
-				</div> 
+				<div class="report-body2"> 
+						<ul class="tree">
+						<h2>Consultation</h2>
+							<li>
+								<details open>
+									<summary> <span class="tree-option">Sign in into Santi Health</span></summary>
+									<ul>
+										<li>
+									<details open>
+										<summary><span class="tree-option-1">Find Doctors</span></summary>
+										<ul>
+											<li><span class="tree-option-2">Doctors</span></li>
+											<li><span class="tree-option-2">Nurses, Nurse-Aides and Medical Officers</span></li>
+										</ul>
+									</details>
+									</li>
+									<li>
+										<details open>
+											<summary><span class="tree-option-3">Pay for Consultation</span></summary>
+											<ul>
+												<li><span class="tree-option-4">Schedule for a date</span></li>
+												<li><span class="tree-option-5">Consult with your prefered Doctor</span></li>
+											</ul>
+										</details>
+									</li>
+									</ul>
+								</details>
+							</li>
+						</ul>
+
+						<ul class="tree">
+						<h2>Pharmacy and Laboratory</h2>
+							<li>
+								<details open>
+									<summary><span class="tree-option">Sign in into Santi Health</span></summary>
+									<ul>
+										<li>
+									<details open>
+										<summary><span class="tree-option-1">Click the pharmacy and Lab button</span></summary>
+										<ul>
+											<li><span class="tree-option-2">Search for the medicine</span></li>
+											<li><span class="tree-option-2">Add to your cart</span></li>
+										</ul>
+									</details>
+									</li>
+									<li>
+										<details open>
+											<summary><span class="tree-option-3">Choose location to be delivered</span></summary>
+											<ul>
+												<li><span class="tree-option-4">Make payment upon delivery</span></li>
+											</ul>
+										</details>
+									</li>
+									</ul>
+								</details>
+							</li>
+						</ul>
+				</div>
+				<h5>Watch the video below to know how to navigate Santi Health.</h5>
+				<center>
+				<video autoplay muted controls>
+					<source src="includes/images/santivid.mp4" type="video/mp4">
+					<source src="includes/images/santivid.ogg" type="video/ogg">
+				</video>
+				</center>
+			</div>
 			</div>
 			<div class="doctors-profile" id="doctors-profile">
 			<div class="filter" id="filter">
@@ -460,7 +397,7 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 			}
 		</script>
 				<?php 
-				$getAll = $conn->prepare("SELECT * FROM santi_data WHERE faculty='Obs/Gyn' OR faculty='Diabetologist' OR faculty='Senior consultant' OR faculty='General Physician' OR faculty='Peaditrician' OR faculty='Neurologist' OR faculty='Cardiologist' OR faculty='Psychiatrist' OR faculty='Orthopedic' OR faculty='Nutritionist/Dietician'");
+				$getAll = $conn->prepare("SELECT * FROM santi_data WHERE faculty='Obs/Gyn' OR faculty='Diabetologist' OR faculty='Senior consultant' OR faculty='General Physician' OR faculty='General Surgeon' OR faculty='Peaditrician' OR faculty='Neurologist' OR faculty='Cardiologist' OR faculty='Psychiatrist' OR faculty='Orthopedic' OR faculty='Nutritionist/Dietician' OR faculty='Urologist'");
 				$getAll->execute();
 				$getAll->setFetchMode(PDO::FETCH_ASSOC);
 				foreach($getAll as $santidata){
@@ -524,7 +461,7 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 				<h1>Bills</h1>
 				<table>
 						<tr>
-							<th>Date of payment</th>
+							<th>S. No</th>
 							<th>Payment For</th>
 							<th>Time of payment</th>
 							<th>Name of payer</th>
@@ -536,15 +473,11 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 						</tr>
 						<?php
 						$cnt = 1;
-						$mail = $_COOKIE['email'];
-						$query = $conn->prepare("SELECT * FROM reports WHERE patient_email=:email");
-						$query->bindParam(':email', $email);
+						$query = $conn->prepare("SELECT date_of_report, date_of_upload, patient_name, laboratory, report_status, report_amount FROM reports WHERE patient_email=:patient_email");
+						$query->bindParam(':patient_email', $cookiemail);
 						$query->execute();
 						$query->setFetchMode(PDO::FETCH_ASSOC);
 						foreach($query as $reportdata){
-							if ($query == NULL){
-								echo "You don't have any laboratory reports";
-							}
 						?>
 						<tr>
 							<td><?php echo $cnt++?></td>
@@ -552,7 +485,9 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 							<td><?php echo htmlspecialchars($reportdata['date_of_upload']) ?? NULL; ?></td>
 							<td><?php echo htmlspecialchars($reportdata['patient_name']) ?? NULL; ?></td>
 							<td><?php echo htmlspecialchars($reportdata['laboratory']) ?? NULL; ?></td>
+							<td>Mpesa</td>
 							<td><?php echo htmlspecialchars($reportdata['report_status']) ?? NULL; ?></td>
+							<td>5,400</td>
 							<td><?php echo 'Ksh.'.htmlspecialchars($reportdata['report_amount']) ?? NULL; }if (empty($reportdata))echo '<center><tr><td> No bill reports to show </td></tr></center>';?></td>
 						</tr>
 				</table>
@@ -571,15 +506,11 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 						</tr>
 						<?php
 						$cnt = 1;
-						$mail = $_COOKIE['email'];
-						$query = $conn->prepare("SELECT * FROM reports WHERE patient_email=:email");
-						$query->bindParam(':email', $email);
+						$query = $conn->prepare("SELECT date_of_report, date_of_upload, patient_name, patient_email, laboratory, report_status, report_amount FROM reports WHERE patient_email=:patient_email");
+						$query->bindParam(':patient_email', $cookiemail);
 						$query->execute();
 						$query->setFetchMode(PDO::FETCH_ASSOC);
 						foreach($query as $reportdata){
-							if ($query == NULL){
-								echo "You don't have any laboratory reports";
-							}
 						?>
 						<tr>
 							<td><?php echo $cnt++?></td>
@@ -588,23 +519,21 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 							<td><?php echo htmlspecialchars($reportdata['patient_name']) ?? NULL; ?></td>
 							<td><?php echo htmlspecialchars($reportdata['laboratory']) ?? NULL; ?></td>
 							<td><?php echo htmlspecialchars($reportdata['report_status']) ?? NULL; ?></td>
-							<td><?php echo 'Ksh.'.htmlspecialchars($reportdata['report_amount']) ?? NULL; }if (empty($reportdata))echo '<center><tr><td> No laboratory reports to show </td></tr></center>';?></td>
+							<td><?php echo 'Ksh.'.htmlspecialchars($reportdata['report_amount']) ?? NULL;} if (empty($reportdata))echo '<center><td> No laboratory reports to show </td></center>';?></td>
 						</tr>
 				</table>
 			</div>
 			</div>
 			<div class="sessions" id="sessions">
 			<center>
-			<?php
-			$session = '<iframe src="'.$embedUrl.' "style="border:none;width:100%;height:460px;background-color: #cad7fda4;" class="digitalsamba" allow="camera; microphone; display-capture; autoplay;"  allowfullscreen="true">
-    		</iframe>';
-					if (!empty($notify)){
-						$search_doc = array_search($email, $notify['patient_email'], strict:true);
-						if (!empty($search_doc)){
-							echo $session;
-						}
-					} else echo $session = "<center><p id='sessionErr'>No sessions for today</p></center>";
-			?>
+			<?php if (strcmp($lseo, $cookiemail) === 0): ?>
+			<iframe src="<?php echo $embedUrl?>" style="border:none;width:100%;height:460px;background-color: #cad7fda4;" class="digitalsamba" allow="camera; microphone; display-capture; autoplay;"  allowfullscreen="true">
+    		</iframe>
+			<?php else : ?>
+			<center><p id='sessionErr'>No sessions for today</p></center>
+			<br>
+			<p>If you booked for a session and you can't get the link please lias with your doctor to share with you the invite link.</p>
+			<?php endif; ?>
 			</center>
 			</div>
 			<div class="schedules" id="schedules">

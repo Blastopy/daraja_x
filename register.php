@@ -7,10 +7,11 @@ function validate($data) {
 	$data = stripcslashes($data);
 	return $data;
 }
+
 $counties = array('Mombasa', 'Kwale', 'Kilifi', 'Tana River', 'Lamu', 'Taita/Taveta,', 'Garissa', 
 'Wajir', 'Mandera', 'Marsabit', 'Isiolo', 'Meru', 'Tharaka-Nithi', 'Embu', 'Kitui', 'Machakos',
  'Makueni', 'Nyandarua', 'Nyeri', 'Kirinyaga', "Murang'a", 'Kiambu', 'Turkana', 'West Pokot', 
- 'Samburu','Trans Nzoia', 'Uasin Gishu', 'Elgeyo/Marakwet', 'Nandi', 'Baringo', 'Laikipia', 'Nakuru', 
+ 'Samburu','Trans Nzoia', 'Uasin Gishu', 'Elgeyo/marakwet', 'Nandi', 'Baringo', 'Laikipia', 'Nakuru', 
  'Narok', 'Kajiado', 'Kericho', 'Bomet', 'Kakamega', 'Vihiga', 'Bungoma',
  'Busia', 'Siaya', 'Kisumu', 'Homa Bay', 'Migori', 'Kisii', 'Nyamira', 'Nairobi');
 
@@ -61,15 +62,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		if (empty($_POST['residence'])) {
 			$residenceErr = "Please enter your county of residence";
 		} elseif(!empty($_POST['residence'])) {
-			if (in_array($_POST['residence'], $counties) == false) {
-				$residenceErr = "Please enter a valid county";
-			} else {
-				$residence = ucwords($_POST['residence']);
-				$residence = validate($_POST['residence']);
-				$residence = filter_input(INPUT_POST, 'residence', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+			$residencey = strtolower($_POST['residence']);
+			$tname = ucwords($residencey);
+			$key = array_search($tname, $counties);
+			if ($key !== false) {
+				$residence = $counties[$key];
+			} else $residenceErr = 'Invalid county';
 		}
 	}
-	}
+
 	if (isset($_POST['submit'])){
 		if (empty($_POST['age'])) {
 			$ageErr = "Please enter your age";
@@ -131,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 				$query->bindParam(':password', $password);
 				$query->bindParam(':status', $status);
 				if($query->execute() == TRUE){
-					$mail->isSMTP();                                           // Set mailer to use SMTP
+					try{$mail->isSMTP();                                           // Set mailer to use SMTP
 						$mail->Host       = 'smtp.gmail.com';                      // Specify main and backup SMTP servers
 						$mail->SMTPAuth   = true;                                  // Enable SMTP authentication
 						$mail->Username   = 'info.santihealth@gmail.com';          // SMTP username
@@ -156,14 +157,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 						if ($mail->send() == true){
 							header('location:login.php');
 						}
+				}catch(Exception $e) {
+					$emailErr = "Verification email not sent, try again.";
 				}
-			} catch(PDOException $e){
-				$formErr = "Internal server error.";
-			}
-	} else {
+			} 
+	 } catch(PDOException $e){
+		$formErr = "Internal server error.";
+	}
+	}else {
 		$emailErr = "Email already exists, please <a style='color:grey;' href='login.php'>login</a>";
 	}
-	} 
+}
 }
 ?>
 <!DOCTYPE html>
@@ -172,10 +176,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="http-equiv" content="30">
+	<meta name="description" content="The best telemedicine platform that links you to your desired doctor ASAP. Your one stop healthcare provider.">
+	<meta name="robots" content="index, follow">
 	<link rel="icon" type="images/x-icon" href="includes/images/santi2.png">
 	<link rel="stylesheet" href="w3.css" />
 	<script src="includes/main.js"></script>
 	<link rel="stylesheet" type="text/css" href="includes/styles/main.css">
+	<link rel="stylesheet" type="text/css" href="includes/styles/responsive_index.css">
 	<title>Register</title>
 </head>
 <body class="form-body">
@@ -183,11 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		<h1 class="form-note">Santi health registration panel</h1>
 		<br>
 		<div class="just-image">
-		<img src="includes/images/santi2.png" alt="avatar" width="20%" style="padding: -100px;float:left;position: absolute;left:10%; top:30%">
-		</div>
-		<br>
-		<div class="just-image">
-		<img src="includes/images/santi2.png" alt="avatar" width="20%" style="padding: -100px;float:left;position: absolute;left:10%; top:30%">
+		<img src="includes/images/santi23.png" alt="avatar" width="20%" style="padding: -100px;float:left;position: absolute;left:10%; top:30%">
 		</div>
 	<div class="form">
 		<form method="POST" action="register.php" enctype="multipart/form-data">

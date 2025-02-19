@@ -1,14 +1,15 @@
 <?php
+require_once 'notification.php';
+
+if (isset($_GET['startsession'])){
 $embedUrl = '';
 date_default_timezone_set('Africa/Nairobi');
 
-require_once 'notification.php';
 $meetingID = '';
 $apiKey = 'Mh75JZKD7pIyBM575tqwqOp3RBWyDbkWrK4fcDB5VAEh0KFFZ6YKKGOxB8q4y5e5';    
 $teamId = '777fbba3-cfe1-4e81-b795-36b0ff072a8a';
 $roomId = 'santihealth';
 $username = $_COOKIE['fname'].''.$_COOKIE['sname'];
-
 
 $header = json_encode([
     'typ' => 'JWT', 
@@ -98,11 +99,12 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
 ]);
 $rooms = curl_exec($ch);
 curl_close($ch);
-$rooms = json_decode($rooms, true) ?? NULL;
+$rooms_live = json_decode($rooms, true) ?? NULL;
 
 if ($rooms && isset($rooms['total_count'])) {
     $totalRooms = $rooms['total_count'].' Rooms created' ?? NULL;
 } else {
     $meetingIDErr = "Failed to create meeting.";
+}
 }
 ?>

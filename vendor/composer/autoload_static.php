@@ -23,6 +23,10 @@ class ComposerStaticInit20fad51902f91e7fd3039e016a6556b5
         array (
             'League\\OAuth2\\Client\\' => 21,
         ),
+        'I' => 
+        array (
+            'IntaSend\\IntaSendPHP\\' => 21,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -52,6 +56,10 @@ class ComposerStaticInit20fad51902f91e7fd3039e016a6556b5
         'League\\OAuth2\\Client\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/oauth2-client/src',
+        ),
+        'IntaSend\\IntaSendPHP\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/intasend/intasend-php/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

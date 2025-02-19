@@ -97,7 +97,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 		<h1>Santi Health Admin Login panel</h1>
 		<br>
 		<div class="just-image">
-		<img src="includes/images/santi2.png" alt="avatar" width="20%" style="padding: -100px;float:left;position: absolute;left:10%; top:30%">
+		<img src="includes/images/santi23.png" alt="avatar" width="20%" style="padding: -100px;float:left;position: absolute;left:10%; top:30%">
 		</div>
 	<div class="form">
 		<form action="adminlogin.php" method="POST" enctype="multipart/form-data">

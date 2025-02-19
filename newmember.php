@@ -107,11 +107,11 @@ function test_inputs($data){
 						$query->bindParam(':price', $price);
 						$query->bindParam(':password', $password);
 						if($query->execute() == TRUE){
+							echo '<div class="alert success"><span class="closebtn">Member registered succesfully</span></div>';
 							header('location:adminpanel.php');
-							return '<div class="alert success"><span class="closebtn">Member registered succesfully</span></div>';
 						} else {
+							echo '<script>alert("Officical not registered...")</script>';
 							header('location:adminpanel.php');
-							return '<script>alert("Officical not registered...")</script>';
 						}
 					} catch(PDOException $e){
 						$ofnameErr = "Internal server error.";

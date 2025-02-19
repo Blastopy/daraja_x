@@ -401,6 +401,54 @@
             "install-path": "../guzzlehttp/psr7"
         },
         {
+            "name": "intasend/intasend-php",
+            "version": "v1.1.1",
+            "version_normalized": "1.1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/IntaSend/intasend-php.git",
+                "reference": "a8a9d43158ea444b7aacb46fca68862a97ae4f3d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/IntaSend/intasend-php/zipball/a8a9d43158ea444b7aacb46fca68862a97ae4f3d",
+                "reference": "a8a9d43158ea444b7aacb46fca68862a97ae4f3d",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.0",
+                "php": ">=7.0"
+            },
+            "time": "2024-05-30T07:39:14+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "IntaSend\\IntaSendPHP\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kishan",
+                    "email": "kishanmnpatel@gmail.com"
+                },
+                {
+                    "name": "Felix CHERUIYOT",
+                    "email": "felix@intasend.com"
+                }
+            ],
+            "description": "The official PHP SDK for IntaSend Payment Gateway",
+            "support": {
+                "issues": "https://github.com/IntaSend/intasend-php/issues",
+                "source": "https://github.com/IntaSend/intasend-php/tree/v1.1.1"
+            },
+            "install-path": "../intasend/intasend-php"
+        },
+        {
             "name": "league/oauth2-client",
             "version": "2.7.0",
             "version_normalized": "2.7.0.0",

@@ -1,6 +1,5 @@
 <?php 
 
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -137,23 +136,26 @@ if (empty($_SESSION['email']) && empty($_COOKIE['fname']) && empty($_COOKIE['sna
 <?php endif ?>
 	<div id="changepassword">
 	<form action="changepassword.php" method="POST" id="changepassword">
-		<img src="includes/images/santi2.png" width="30%">
+		<img src="includes/images/santi23.png" width="30%">
 		<p><h4>Hi <?php echo htmlspecialchars($profile)?>, Please enter your details to change your password</h4></p>
 		<label for="email">Email Address:</label>
 		<input type="email" name="email" placeholder="name@example.com" required title="Type your registered email address here" class="form-group<?php echo $emailErr ?? NULL ?>">
 		<div class="errormessage">
 			<?php echo $emailErr ?? null ?>
 		</div>
+		<br>
 		<label for="password">Old Password:</label>
 		<input type="password" name="old_password" placeholder="Old password" pattern="(?=.*\d)(?=.*[a-z])(?=,*[A-Z].{8,}" required title="Password has to have capital letters, small letters, numbers and special characters" class="form-group<?php echo $oldpasswordErr ?? NULL ?>">
 		<div class="errormessage">
 			<?php echo $oldpasswordErr ?? NULL ?>
 		</div>
+		<br>
 		<label for="password">New Password:</label>
 		<input type="password" name="new_password" id="pswd" placeholder="New password" pattern="(?=.*\d)(?=.*[a-z])(?=,*[A-Z].{8,}" required title="Password has to have capital letters, small letters, numbers and special characters" class="form-group<?php echo $newpasswordErr ?? NULL ?>">
 		<div class="errormessage">
 			<?php echo $newpasswordErr ?? NULL ?>
 		</div>
+		<br>
 		<input type="checkbox" onclick="showpsd()">Show password
 				<script>
 				function showpsd() {
@@ -165,6 +167,7 @@ if (empty($_SESSION['email']) && empty($_COOKIE['fname']) && empty($_COOKIE['sna
 					}
 				}
 				</script>
+				<br>
 		<input type="submit" value="Submit" name="submit">
 	</form>
 	<p style="color:#8F92C3;line-height:1.7;margin-top:2rem;position:relative;">Copyright @ <?php echo date("Y")?>  | All Rights Reserved | Santi Health Ltd.</p>

@@ -4,23 +4,33 @@ var nav = document.querySelector(".navcontainer");
 menuicn.addEventListener("click", () => {
     nav.classList.toggle("navclose");
 });
+function toggleSidebar(){
+	const sidebar = document.getElementById('navcontainer');
+
+	//Toggle the closed class
+	sidebar.classList.toggle('navclose');
+
+	//Save the state in the local storage
+	const isClosed = sidebar.classList.contains('navclose');
+	localStorage.setItem('sidebarClosed', isClosed ? 'true' : 'false');
+}
+window.onload = function() {
+	const sidebarClosed = localStorage.getItem('sidebarClosed') === 'true';
+	const sidebar = document.getElementById('navcontainer');
+	const content = document.getElementById('main-content');
+
+	//Apply the stored state
+	if (sidebarClosed) {
+		sidebar.classList.add('closed');
+	}
+};
+document.getElementById('toggleSidebar').addEventListener('click', toggleSidebar);
 
 var online = document.getElementById('main_content').innerHTML;
 if (online.navigator.onLine == 'false'){
 	document.getElementById('offline').innerHTML = "Seems you're offline😒";
 }
-function w3_open() {
-	document.getElementById("main").style.marginLeft = "21%";
-	document.getElementById("mySidebar").style.width = "20%";
-	document.getElementById("main").style.transition = "0.5s";
-	document.getElementById("mySidebar").style.display = "block";
-	document.getElementById("openNav").style.display = 'none';
-}
-function w3_close() {
-	document.getElementById("main").style.marginLeft = "0%";
-	document.getElementById("mySidebar").style.display = "none";
-	document.getElementById("openNav").style.display = "inline-block";
-}
+
 function showpsd() {
 	var x = document.getElementById("psw");
 	if (x.type === "password") {
@@ -92,37 +102,33 @@ myInput.onkeyup = function() {
 	}
 }
 
-var cookies = document.cookie;
-
-// Function to get a specific cookie by name
-function getCookie(name) {
-    var cookieArr = document.cookie.split(";");
-
-    for(let i = 0; i < cookieArr.length; i++) {
-        var cookiePair = cookieArr[i].split("=");
-
-        if(name == cookiePair[0].trim()) {
-            return decodeURIComponent(cookiePair[1]);
-        }
-    }
-    return null;
+function setCookie(name, value, days){
+	const expires = new Date(Date.now() + days * 864e5).toUTCString();
+	document.cookie = name + "=" + encodeURIComponent(value) + "; expires=" + expires + "; path=/";
 }
-var buttons = getCookie("button");
-window.onload = function() {
+
+function getCookie(name){
+	return document.cookie.split('; ').find(row => row.startsWith(name + "="))?.split("=")[1];
+}
+
+const buttons = getCookie("button");
+document.addEventListener("DOMContentLoaded", function() {
+	const buttons = getCookie("button");
 	if(buttons == 'doctors'){
 		showDoctors();
-	}else if(buttons == 'dashboard'){
+	}else if(buttons === 'dashboard'){
 		Dashboard();
-	}else if(buttons == 'reports'){
+	}else if(buttons === 'reports'){
 		reports();
-	}else if (buttons == 'sessions') {
+	}else if (buttons === 'sessions') {
 		sessions();
-	}else if (buttons == 'schedules') {
+	}else if (buttons === 'schedules') {
 		schedules();
-	}else if (buttons == 'payment') {
-	payment();
+	}else if (buttons === 'payment') {
+		payment();
 }
-}
+
+});
 function showDoctors() {
 	const doctors = document.getElementById('doctors-profile');
 	doctors.style.display = "block";
@@ -133,7 +139,7 @@ function showDoctors() {
 	document.getElementById('schedules').style.display = 'none';
 	document.getElementById('labreports').style.display = 'none';
 	document.getElementById('payment').style.display = 'none';
-	document.cookie = "button=doctors";
+	setCookie("button", "doctors", 7);
 }
 function Dashboard() {
 	const dashboard = document.getElementById('main_content');
@@ -145,8 +151,7 @@ function Dashboard() {
 	document.getElementById('schedules').style.display = 'none';
 	document.getElementById('labreports').style.display = 'none';
 	document.getElementById('payment').style.display = 'none';
-	document.cookie = "button=dashboard";
-
+	setCookie("button", "dashboard", 7);
 }
 
 function reports() {
@@ -159,8 +164,7 @@ function reports() {
 	document.getElementById('schedules').style.display = 'none';
 	document.getElementById('labreports').style.display = 'none';
 	document.getElementById('payment').style.display = 'none';
-	document.cookie = "button=reports";
-
+	setCookie("button", "reports", 7);
 }
 function sessions() {
 	const sessions = document.getElementById('sessions');
@@ -173,7 +177,7 @@ function sessions() {
 	document.getElementById('schedules').style.display = 'none';
 	document.getElementById('labreports').style.display = 'none';
 	document.getElementById('payment').style.display = 'none';
-	document.cookie = "button=sessions";
+	setCookie("button", "sessions", 7);
 }
 function schedules() {
 	const schedules = document.getElementById('schedules');
@@ -185,7 +189,7 @@ function schedules() {
 	document.getElementById('sessions').style.display = 'none';
 	document.getElementById('labreports').style.display = 'none';
 	document.getElementById('payment').style.display = 'none';
-	document.cookie = "button=schedules";
+	setCookie("button", "schedules", 7);
 }
 function labreports() {
 	const labreports = document.getElementById('labreports');
@@ -197,7 +201,7 @@ function labreports() {
 	document.getElementById('sessions').style.display = 'none';
 	document.getElementById('schedules').style.display = 'none';
 	document.getElementById('payment').style.display = 'none';
-	document.cookie = "button=labreports";
+	setCookie("button", "labreports", 7);
 
 }
 function payment() {
@@ -210,8 +214,10 @@ function payment() {
 	document.getElementById('labreports').style.display = 'none';
 	document.getElementById('sessions').style.display = 'none';
 	document.getElementById('schedules').style.display = 'none';
-	document.cookie = "button=payment";
+	setCookie("button", "payment", 7);
 }
+
+
 function openForm() {
 	document.getElementById('myForm').style.display = 'block';
 }
@@ -326,3 +332,12 @@ filterSelection('all')
 					this.className += " active";
 				});
 }
+
+		var myVar;
+		function myFunction(){
+			myVar = setTimeout(showPage, 3000);
+		}
+		function showPage(){
+			document.getElementById("loader").style.display = "none";
+			document.getElementById("myDiv").style.display = "block";
+		}

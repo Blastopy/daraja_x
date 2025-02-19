@@ -186,14 +186,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	<meta charset="UTF-8"> 
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"> 
 	<meta name="viewport" content="width=device-width,  initial-scale=1.0"> 
-	<title>Santi Health - Adminpanel</title> 
-	<link rel="stylesheet" href="includes/styles/dashboard2.css"> 
+	<title>Santi Health - Adminpanel</title>
+	<link rel="stylesheet" href="includes/styles/dashboard2.css">
 	<link rel="stylesheet" href="includes/styles/responsiive.css">
-	<link rel="icon" type="images/x-icon" href="includes/images/white.JPG">
+	<link rel="icon" type="images/x-icon" href="includes/images/santi2.png">
 	<script src="includes/main.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head> 
-<body> 
+<body>
 	<header>
 	<div class="icn menuicn" id="menuicn" alt='menu-icon'>
 	<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
@@ -201,7 +201,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 </svg> 
 </div>
 		<div class="logosec"> 
-			<div class="logo"><img src="includes/images/white.JPG" width="15%"></div> 
+			<div class="logo"><img src="includes/images/santi23.png" width="15%"></div> 
 		</div>
 		<span class="notification" id="notification" onclick="document.getElementById('notification').style.display = 'none'">
 		</span>
@@ -242,12 +242,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 				menuicn.addEventListener("click", () => {
 					nav.classList.toggle("navclose");
 				});
+				
+				checkCookieAndCallFunction();
 			</script>
-			<nav class="nav"> 
+			<nav class="nav">
 				<div class="nav-upper-options"> 
 				<button class="nav-option option1" onclick="Dashboard()">
-					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-menu-app" viewBox="0 0 16 16">
-  <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5"/>
+				<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+  <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5"/>
 </svg> 
 						<h3>Dashboard</h3> 
 						</button>
@@ -380,9 +382,173 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 						</div> 
 						<?php } if (empty($leo)) echo '<center>No bookings for today</center>'; ?>
 					</div> 
-				</div> 
+				</div>
+				<h1>Ambulance Services in Kenya</h1>
+				<div class="item1"> 
+			<div class="report-topic-heading"> 
+						<h3 class="t-op">S. No</h3> 
+						<h3 class="t-op">Agency name.</h3> 
+						<h3 class="t-op">Telephone number</h3> 
+					</div>
+				</div>
+				<div class="item1">
+							<h3 class="t-op-nextlvl">1.</h3> 
+							<h3 class="t-op-nextlvl">Ivory Ambulance</h3> 
+							<h3 class="t-op-nextlvl">0726998880</h3> 
+						</div> 
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">2.</h3> 
+							<h3 class="t-op-nextlvl">Nairobi East Hospital</h3> 
+							<h3 class="t-op-nextlvl">0111435797</h3> 
+						</div> 
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">3.</h3> 
+							<h3 class="t-op-nextlvl">Eplus</h3> 
+							<h3 class="t-op-nextlvl">0700395395</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">4.</h3> 
+							<h3 class="t-op-nextlvl">A.A.R</h3> 
+							<h3 class="t-op-nextlvl">0725225225</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">5.</h3> 
+							<h3 class="t-op-nextlvl">St. John Ambulance</h3> 
+							<h3 class="t-op-nextlvl">0721225285</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">6.</h3> 
+							<h3 class="t-op-nextlvl">RFH</h3> 
+							<h3 class="t-op-nextlvl">0741574782</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">7.</h3> 
+							<h3 class="t-op-nextlvl">OCOA</h3> 
+							<h3 class="t-op-nextlvl">0758692000</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">8.</h3> 
+							<h3 class="t-op-nextlvl">Eureka</h3> 
+							<h3 class="t-op-nextlvl">0712222547</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">9.</h3> 
+							<h3 class="t-op-nextlvl">Moshi Ambulance</h3> 
+							<h3 class="t-op-nextlvl">0792274997</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">10.</h3> 
+							<h3 class="t-op-nextlvl">Lifemed</h3> 
+							<h3 class="t-op-nextlvl">0708188085</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">11.</h3> 
+							<h3 class="t-op-nextlvl">EOC</h3> 
+							<h3 class="t-op-nextlvl">1508</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">12.</h3> 
+							<h3 class="t-op-nextlvl">Eagle Rescue Ambulance</h3> 
+							<h3 class="t-op-nextlvl">0727498805</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">13.</h3> 
+							<h3 class="t-op-nextlvl">Arrow Ambulance</h3> 
+							<h3 class="t-op-nextlvl">0723623880</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">14.</h3> 
+							<h3 class="t-op-nextlvl">Nyanchwa Ambulance Kisii</h3> 
+							<h3 class="t-op-nextlvl">0723623880</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">15.</h3> 
+							<h3 class="t-op-nextlvl">Prodigy Ambulance</h3> 
+							<h3 class="t-op-nextlvl">0713644686</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">16.</h3> 
+							<h3 class="t-op-nextlvl">Lifeline Ambulance</h3> 
+							<h3 class="t-op-nextlvl">0700024764</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">17.</h3> 
+							<h3 class="t-op-nextlvl">VHS Ambulance</h3> 
+							<h3 class="t-op-nextlvl">0702610657</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">18.</h3> 
+							<h3 class="t-op-nextlvl">Red cross</h3> 
+							<h3 class="t-op-nextlvl">1199</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">19.</h3> 
+							<h3 class="t-op-nextlvl">Neema Ambulance Kahawa Sukari</h3> 
+							<h3 class="t-op-nextlvl">0759263586</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">20.</h3> 
+							<h3 class="t-op-nextlvl">Morning star Ambulance</h3> 
+							<h3 class="t-op-nextlvl">0758803688</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">21.</h3> 
+							<h3 class="t-op-nextlvl">Ladnan Hospital</h3> 
+							<h3 class="t-op-nextlvl">0707000730</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">22.</h3> 
+							<h3 class="t-op-nextlvl">Nairobi Women's Kitengela</h3> 
+							<h3 class="t-op-nextlvl">0717723677</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">23.</h3> 
+							<h3 class="t-op-nextlvl">King David Hospital Ambulance</h3> 
+							<h3 class="t-op-nextlvl">0798672797</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">24.</h3> 
+							<h3 class="t-op-nextlvl">Quick Safe Ambulance Nairobi</h3> 
+							<h3 class="t-op-nextlvl">0721853796</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">25.</h3> 
+							<h3 class="t-op-nextlvl">Nairobi Women's Nakuru</h3> 
+							<h3 class="t-op-nextlvl">0707957840</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">26.</h3> 
+							<h3 class="t-op-nextlvl">First Responder</h3> 
+							<h3 class="t-op-nextlvl">0792005351</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">27.</h3> 
+							<h3 class="t-op-nextlvl">Radiant Hospital Ambulance</h3> 
+							<h3 class="t-op-nextlvl">0725532000</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">28.</h3> 
+							<h3 class="t-op-nextlvl">Avenue Parklands</h3> 
+							<h3 class="t-op-nextlvl">0711060150/0711060175</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">29.</h3> 
+							<h3 class="t-op-nextlvl">Avenue Thika</h3> 
+							<h3 class="t-op-nextlvl">0711060800/0715869147</h3> 
+						</div>
+						<div class="item1"> 
+							<h3 class="t-op-nextlvl">30.</h3> 
+							<h3 class="t-op-nextlvl">Rescuemed</h3>
+							<h3 class="t-op-nextlvl">0722805645</h3>
+						</div>
 			</div>
 			<div class="doctors-profile" id="doctors-profile">
+			<div class="filter">
+			<button onclick="showBills()" class="filterbtn">Members</button>
+			<button onclick="showReports()" class="filterbtn">Reports</button>
+			</div>
+			<div id="bills">
+			<h1>Members</h1>
 			<table id="santiTable">
 						<tr>
 							<th>S. No</th>
@@ -405,7 +571,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 						<tr>
 							<td><?php echo $cnt++ ?></td>
 							<td><?php echo htmlspecialchars($santidata['registration_date']) ?? NULL ?></td>
-							<td><?php echo htmlspecialchars($santidata['id']) ?? NULL ?></td>
+							<td><?php echo htmlspecialchars($santidata['id']) ?? NULL;$id_no = $santidata['id'] ?></td>
 							<td><?php echo htmlspecialchars($santidata['fname'].' '.$santidata['sname']) ?? NULL ?></td>
 							<td><?php echo htmlspecialchars($santidata['tel']) ?? NULL ?></td>
 							<td><?php echo htmlspecialchars($santidata['email']) ?? NULL ?></td>
@@ -417,9 +583,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 							</form>
 							</td>
 							<?php
-							$id = htmlspecialchars($santidata['id']) ?? NULL; } 
-							if(isset($_POST['delete_member'])){
-							$sql1=$conn->prepare("DELETE FROM members where id='$id'");
+							}if(isset($_POST['delete_member'])){
+							$sql1=$conn->prepare("DELETE FROM members where id='$id_no'");
 							if($sql1 -> execute() == TRUE){
 								$booking =  '<div class="alert success"><span class="closebtn">Staff data deleted succesfully</span></div>';
 							}else {
@@ -428,8 +593,54 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 							}?>
 						</tr>
 				</table>
+				</div>
+				<script>
+					function showReports(){
+					const labreports = document.getElementById('lab-reviews');
+					const activebtn = document.getElementsByClassName('filterbtn1');
+					labreports.style.display = "block";
+					document.getElementById('bills').style.display = "none";
+				}
+				function showBills() {
+					const bills = document.getElementById('bills');
+					bills.style.display = "block";
+					const labreports = document.getElementById('lab-reviews');
+					labreports.style.display = "none";
+				}
+				</script>
+			<div class="lab-reviews" style="display: none;" id="lab-reviews">
+			<h1>Lab reports</h1>
+				<table>
+						<tr>
+							<th>S. No</th>
+							<th>Date of test</th>
+							<th>Date of entry</th>
+							<th>Testing reason</th>
+							<th>Place of test</th>
+							<th>Status</th>
+							<th>Sum paid</th>
+						</tr>
+						<?php
+						$cnt = 1;
+						$query = $conn->prepare("SELECT date_of_report, date_of_upload, patient_name, patient_email, laboratory, report_status, report_amount FROM reports");
+						$query->execute();
+						$query->setFetchMode(PDO::FETCH_ASSOC);
+						foreach($query as $reportdata){
+						?>
+						<tr>
+							<td><?php echo $cnt++?></td>
+							<td><?php echo htmlspecialchars($reportdata['date_of_report']) ?? NULL; ?></td>
+							<td><?php echo htmlspecialchars($reportdata['date_of_upload']) ?? NULL; ?></td>
+							<td><?php echo htmlspecialchars($reportdata['patient_name']) ?? NULL; ?></td>
+							<td><?php echo htmlspecialchars($reportdata['laboratory']) ?? NULL; ?></td>
+							<td><?php echo htmlspecialchars($reportdata['report_status']) ?? NULL; ?></td>
+							<td><?php echo 'Ksh.'.htmlspecialchars($reportdata['report_amount']) ?? NULL;} if (empty($reportdata))echo '<center><td> No laboratory reports to show </td></center>';?></td>
+						</tr>
+				</table>
+			</div>
 			</div>
 			<div class="reports" id="reports">
+			<h1>Staff</h1>
 			<table>
 						<tr>
 							<th>S. No</th>
@@ -497,11 +708,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 						<h3 class="t-op">Room Id</h3> 
 					</div>
 					<?php
-					$getRooms = $rooms['data'] ?? NULL;
+					$getRooms = $rooms_live['data'] ?? NULL;
+					if($getRooms === NULL){
+						echo '<center>No rooms available</center>';
+						$getRooms = [];
+					}
 					foreach($getRooms as $all) {
-						if($getRooms == NULL){
-							echo 'No rooms available';
-						}
 					?>
 					<div class="item1"> 
 							<h3 class="t-op-nextlvl"><?php echo $all['id'] ?? NULL?></h3>
@@ -553,6 +765,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 							<option value="Neurologist">Neurologist</option>
 							<option value="Urologist">Urologist</option>
 							<option value="General surgeon">General surgeon</option>
+							<option value="General Physician">General Physician</option>
 							<option value="Nutritionist/Dietician">Nutritionist/Dietician</option>
 							<option value="Peaditrician">Peaditrician</option>
 							<option value="Nephrologist">Nephrologist</option>
@@ -751,7 +964,7 @@ myInput.onkeyup = function() {
 				<center>
 					<h1>Initiate patient payment</h1>
 					<br>
-					<div class="errormessage">
+					<div class="errormessage form-group<?php echo $reasonErr ?? NULL ?>">
 						<?php echo $reasonErr1 ?>
 					</div>
 				</center>

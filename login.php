@@ -33,10 +33,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 				$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
 			}
 		}
+		$numbers = "1234567890";
 	if (isset($_POST['submit'])){
 		if (empty($_POST['password']) && strlen($_POST['password']) < 8){
 			$passwordErr = "Please check your password*";
-		}elseif(!empty($_POST['password']) && strlen($_POST['password']) >= 8){
+		}elseif(filter_var($_POST['password'], FILTER_SANITIZE_NUMBER_INT) == ""){
+			$passwordErr = "Password must atleast have a <b>Number</b>*";
+		}
+		elseif(!empty($_POST['password']) && strlen($_POST['password']) >= 8){
 			$password = $_POST['password'];
 		}
 	}
@@ -117,6 +121,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="http-equiv" content="30">
+	<meta name="description" content="The best telemedicine platform that links you to your desired doctor ASAP. Your one stop healthcare provider.">
+	<meta name="robots" content="index, follow">
 	<link rel="icon" type="images/x-icon" href="includes/images/santi2.png">
 	<script src="includes/main.js"></script>
 	<link rel="stylesheet" href="w3.css" />	<link type="text/css" rel="stylesheet" href="includes/styles/main.css">
@@ -127,11 +133,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 		<h1>Santi Health Login panel</h1>
 		<br>
 		<div class="just-image">
-		<img src="includes/images/santi2.png" alt="avatar" width="20%" style="padding: -100px;float:left;position: absolute;left:10%; top:30%">
+		<img src="includes/images/santi23.png" alt="avatar" width="20%" style="padding: -100px;float:left;position: absolute;left:10%; top:30%">
 		</div>
 	<div class="form">
 		<form action="login.php" method="POST" enctype="multipart/form-data">
 			<fieldset>
+				<center><h1 style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Welcome back</h1></center>
 				<h1>Please enter your details to login</h1>
 				<div class="form-input">
 				<label for="fname">Email Address:</label><br>
@@ -169,7 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 				<center>
 				<input type="submit" name="submit" value="Submit">
 				</center>
-<p>Not yet registered? <a href="register.php" style="color:grey;">Click here</a></p>
+<p>Not yet registered? <a href="register.php" style="color:grey;">Click here to register.</a></p>
 			</div>
 			</fieldset>
 			</form>

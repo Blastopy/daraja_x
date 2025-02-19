@@ -44,6 +44,7 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="icon" type="images/x-icon" href="includes/images/santi2.png">
 	<link rel="stylesheet" type="text/css" href="includes/styles/payment.css">
+	<link rel="stylesheet" type="text/css" href="includes/styles/responsiive.css">
 	<title>Santi Health - Payment</title>
     </head>
    <body>
@@ -76,7 +77,7 @@ if (empty($_SESSION['email']) || empty($_COOKIE['fname']) || empty($_COOKIE['sna
         <button type="submit" name="submit"><i class="ion-locked"></i> Confirm and Pay</button>
     </div>
     </form>
-    <p style="color:white;line-height:1.7;margin-top:2rem;position:relative;">Copyright @ <?php echo date("Y")?>  | All Rights Reserved | Santi Health Ltd.</p>
+    <p class="shorty" style="color:white;line-height:1.7;margin-top:2rem;position:relative;">Copyright @ <?php echo date("Y")?>  | All Rights Reserved | Santi Health Ltd.</p>
 </div>
    </body>
 </html>

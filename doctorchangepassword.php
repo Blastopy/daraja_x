@@ -101,7 +101,7 @@ $profile = $firstname;
 <body>
 	<div id="changepassword">
 	<form action="doctorchangepassword.php" method="POST" id="changepassword">
-		<img src="includes/images/santi2.png" width="30%">
+		<img src="includes/images/santi23.png" width="30%">
 		<p><h4>Hi <?php echo htmlspecialchars($profile).', ' ?? NULL?>Enter your details to change your password</h4></p>
 		<label for="email">Email Address:</label>
 		<input type="email" name="email" placeholder="name@example.com" required title="Type your registered email address here" class="form-group<?php echo $emailErr ?? NULL ?>">

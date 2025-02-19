@@ -1,113 +1,425 @@
-/* Responsive CSS Here */
-@media screen and (max-width: 950px) { 
-	.responsive {
-		display: block;
-		position: relative;
-		font-size: 50px;
-		background-color: aliceblue;
+/* Phones layout */
+@media (max-width: 767px) {
+	body {
+		max-width: 100%;
+		overflow-x: hidden;
 	}
-	.responsive > a {
-		text-decoration: none;
+	header{
+		width: 100%;
+		height: 50px;
 	}
-	#main_content, #doctors-profile, #reports, #sessions, #reports, #schedules{
-		display: none;
-		background-color: aliceblue;
-	}
-	
-	header {
+	#menuicn{
 		display: none;
 	}
-	.navcontainer {
+	.logo img{
+		float: left;
+		width: 50px;
+		background-blend-mode: color;
+	}
+	header > .searchbar form input[type= 'text'] {
+		width: 200px;
+		left: 20px;
+		height: 30px;
+		font-size: 14px;
+		font-family: 'Times New Roman', Times, serif;
+	}
+	.message {
+		gap: 20px;
+		float: right;
+		left: 30px;
+		padding: 0;
+	}
+	.message .dropdown .dropbtn img{
+		height: 50px;
+		width: 50px;
+		border-radius: 50%;
+	}
+	.message .dropdown .dropbtn img:hover {
+		box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.6), 0 7px 21px 0 rgba(0, 0, 0, 0.20);
+	}
+	.dpicn {
+		width: 50px;
+		height: 50px;
+	}
+ 	.dropdown-content{
+		top: 40px;
+		padding: 5px;
+		width: 20px;
+	}
+	.dropdown-content a {
+		font-size: 12px;
+		float: none;
+		border: none;
+		color: blue;
+		font-family: 'Times New Roman', Times, serif;
+	}
+	/* .navcontainer {
+		top: -20px;
+		bottom: 0px;
+	}
+	.nav {
+		width: 50px;
+		min-height: 100%;
+		height: 100vh;
+		bottom: 0px;
+	} */
+	 .nav {
+		position: fixed;
+		bottom: 0;
+		height: 10px;
+		border-top: 1px solid #007bff;
+		border-bottom: none;
+		border-right: none;
+		border-left: none;
+		border-radius: 0px;
+		top: 90vh;
+		width: 100%;
+		overflow: hidden;
+	 }
+	.nav-option {
+		padding-left: 5px;
+		border-left: none;
+		border-radius: 15px;
+		background-color: white;
+	}
+	.nav-option:hover {
+		padding-left: 5px;
+		border-left: none;
+	}
+	.nav-option h3 {
 		display: none;
 	}
-	} 
-	
-	@media screen and (max-width: 850px) { 
-		.responsive {
-			display: block;
-			position: relative;
-			font-size: 50px;
-			background-color: aliceblue;
-		}
-		.responsive > a {
-			text-decoration: none;
-		}
-		#main_content {
-			display: none;
-			background-color: aliceblue;
-		}
-		header {
-			display: none;
-		}
-		.navcontainer {
-			display: none;
-		}
-	} 
-	
-	@media screen and (max-width: 490px) { 
-		.responsive {
-			display: block;
-			position: relative;
-			font-size: 50px;
-			background-color: aliceblue;
-		}
-		.responsive > a {
-			text-decoration: none;
-		}
-		#main_content {
-			display: none;
-			background-color: aliceblue;
-		}
-		header {
-			display: none;
-		}
-		.navcontainer {
-			display: none;
-		}
-}
-	
-	@media screen and (max-width: 400px) { 
-		.responsive {
-			display: block;
-			position: relative;
-			font-size: 50px;
-			background-color: aliceblue;
-		}
-		.responsive > a {
-			text-decoration: none;
-		}
-		#main_content {
-			display: none;
-			background-color: aliceblue;
-		}
-		header {
-			display: none;
-		}
-		.navcontainer {
-			display: none;
-		}
+	/* .nav-upper-options {
+		display: flex;
+		flex-direction: column;
+		gap: 80px;
+		height: 100%;
+	} */
+	.nav-upper-options {
+		display: flex;
+		flex-direction: row;
+		gap: 30px;
+		height: 3%;
+		padding: 8px;
+		border-radius: 5px;
+	}
+	.nav-option:hover {
+		transform: scale(1.05);
+		color: #007bff;
+		background-color: white;
+	}
+	.nav-img {
+		margin-left: 95px;
+		border-radius: 5px;
+	}
+	/* .bi {
+		margin-left: 97px;
+	} */
+	.bi {
+		margin-left: 10px;
+		padding: 1px;
+		justify-content: center;
+	}
+	.option6 {
+		display: none;
+	}
+	.logout {
+		display: none;
+	}
+	.main{
+		width: 5000%;
+		overflow-y: scroll; 
+		overflow-x: hidden; 
+		padding: 00px 00px 00px 00px;
+		gap: 0px;
+		padding-bottom: 85px;
+	}
+	.box-container {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1px;
+		justify-content: space-evenly;
+		padding: 0px 0px 1px 1px;
+	}
+	.dash-intro {
+		display: inline-block;
+		color: black;
+		font-family: 'Times New Roman', Times, serif;
+		font-size: 16px;
+	}
+	.box {
+		width: 98px;
+		border-radius: 5px;
+		height: 50px;
+		border: 1px solid white;
+	}
+	.box .text .topic-heading {
+		font-family: 'Times New Roman', Times, serif;
+		font-size: 12px;
+		letter-spacing: 0px;
+	}
+	.box .text .topic {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 10px;
+	}
+	.box .bi {
+		width: 100%;
+	}
+	.box:hover {
+		transform: scale(1.05);
+	}
+	.report-container {
+		border-radius: 10px;
+		padding: 0px 0px 0px 0px;
+		margin: 20px 0px 10px 0px;
+	}
+	.report-header {
+		height: 20px;
+	}
 
-	} 
-	
-	@media screen and (max-width: 320px) { 
-		.responsive {
-			display: block;
-			position: relative;
-			font-size: 50px;
-			background-color: aliceblue;
-		}
-		.responsive > a {
-			text-decoration: none;
-		}
-		#main_content {
-			display: none;
-			background-color: aliceblue;
-		}
-		header {
-			display: none;
-		}
-		.navcontainer {
-			display: none;
-		}
+	.recent-Articles {
+		font-size: 14px;
+		font-weight: normal;
+		color: green;
+		font-family: Arial, Helvetica, sans-serif;
 	}
-	
+	.view {
+		width: 50px;
+		height: 20px;
+		border-radius: 2px;
+		font-size: 10px;
+		background-color: rgb(0, 81, 255);
+	}
+	.report-body {
+		max-width: fit-content;
+		padding: 5px;
+	}
+	.report-body .tree {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		width: 100%;
+		padding: 0px;
+		position: relative;
+		font-size: 11px;
+		font-family: 'Times New Roman', Times, serif;
+	}
+	.report-topic-heading {
+		width: 450px;
+	}
+	.item1 {
+		width: 450px;
+		font-size: 12px;
+		font-family: 'Times New Roman', Times, serif;
+		padding: 12px;
+		margin-top: 8px;
+		border-radius: 3px;
+	}
+	.t-op-nextlvl {
+		font-family: 'Times New Roman', Times, serif;
+		font-size: 12px;
+	}
+	#doctors-profile {
+		position: absolute;
+		display: none;
+		height: calc(100vh - 70px);
+		width: 100vw;
+		overflow-y: scroll; 
+		overflow-x: hidden; 
+		left: 0px;
+		top: -50px;
+	}
+	.filter button{
+		padding: 5px;
+		font-size: 12px;
+		margin: 1px;
+	}
+	.ditch {
+		width: 100%;
+		border-radius: 10px;
+	}
+	.ditch img  {
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+		width: 100%;
+	}
+	.ditch h3 {
+		font-family: 'Times New Roman', Times, serif;
+		font-size: 14px;
+	}
+	.ditch input[type= 'submit'] {
+		background: #007bff;
+		color: yellow;
+		padding: 5px;
+		width: 50%;
+		border-radius: 5px;
+	}
+	.ditch input[type= 'submit']:hover {
+		box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.6), 0 7px 21px 0 rgba(0, 0, 0, 0.20);
+	}
+	#reports {
+		position: absolute;
+		display: none;
+		height: calc(100vh - 70px);
+		width: 100vw;
+		overflow-y: scroll; 
+		overflow-x: hidden; 
+		left: 0px;
+		top: -50px;
+		padding-bottom: 85px;
+	}
+	.filter button{
+		padding: 5px;
+		font-size: 12px;
+		margin: 1px;
+		font-family: Arial, Helvetica, sans-serif;
+	}
+	.bills h1{
+		font-size: 28px;
+	}
+	.lab-reviews h1{
+		font-size: 28px;
+	}
+	table{
+		position: relative;
+		border-radius: 5px;
+		width: 100%;
+		font-size: 11px;
+		overflow-x: scroll;
+		padding-right: 0px;
+		font-family: 'Times New Roman', Times, serif;
+	}
+	tr th td {
+		height: 10px;
+		width: 90vw;
+		margin: 1px;
+		padding: 1px;
+	}
+	#sessions {
+		position: absolute;
+		display: none;
+		height: calc(100vh - 70px);
+		width: 100vw;
+		overflow-y: scroll; 
+		overflow-x: hidden;
+		left: 0px;
+		padding-bottom: 85px;
+		z-index: -1;
+	}
+	#sessionErr {
+		width: 300px;
+		padding: 50px;
+		font-size: 32px;
+		font-family: Arial, Helvetica, sans-serif;
+	}
+	#labreports {
+		position: absolute;
+		display: none;
+		height: calc(100vh - 70px);
+		width: 100vw;
+		overflow-y: scroll; 
+		overflow-x: hidden; 
+		left: 0px;
+		padding-bottom: 85px;
+	}
+	#payment {
+		position: absolute;
+		display: none;
+		height: calc(100vh - 70px);
+		width: 100vw;
+		overflow-y: scroll; 
+		overflow-x: hidden; 
+		left: 0px;
+		padding-bottom: 85px;
+	}
+	#schedules {
+		position: absolute;
+		display: none;
+		height: calc(100vh - 70px);
+		width: 100vw;
+		overflow-y: scroll; 
+		overflow-x: hidden; 
+		left: 0px;
+		padding-bottom: 85px;
+	}
+	.errormessage {
+		font-size: 12px;
+		font-style: italic;
+	}
+	.glow {
+		font-size: 28px;
+		animation: glow 1s ease-in-out alternate;
+	}
+	@-webkit-keyframes glow {
+		from {
+		  text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+		}
+		to {
+		  text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+		}
+	  }
+	  div #changepassword {
+		width: 90vw;
+		margin-right: 20px;
+	  }
+	  #changepassword {
+		min-height: 50vh;
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		align-items: center;
+	  }
+	  #changepassword input[type='email'], input[type='password'], input[type='text']{
+		padding: 5px;
+		width: 70%;
+		margin: 1px;
+		display: inline-block;
+	  }
+	  #changepassword img {
+		padding: 0px;
+	  }
+	  #changepassword p h4 {
+		font-size: 28px;
+		font-family: Arial, Helvetica, sans-serif;
+	  }
+	  #changepassword label {
+		padding: 5px;
+		margin: 1px;
+	  }
+	  .container {
+		height: 80vh;
+		margin-left: 0px;
+		width: 70%;
+	  }
+	  .container form {
+		margin: 10px;
+		padding-left: 10px;
+		width: 80%;
+	  }
+	  .card {
+		margin: 5px;
+		padding: 10px;
+	  }
+	  .card .row {
+		width: 80%;
+		border-radius: 10px;
+	  }
+	  .row > img {
+		width: 80%;
+	  }
+	  .row p {
+		font-family: 'Times New Roman', Times, serif;
+		font-size: 16px;
+	  }
+	  .button button {
+		border-radius: 10px;
+		width: 100%;
+		justify-content: center;
+	  }
+	  .shorty {
+		position: relative;
+		left: 40px;
+		gap: 0px;
+		display: inline-block;
+	  }
+}

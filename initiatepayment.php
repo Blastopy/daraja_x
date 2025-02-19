@@ -2,11 +2,9 @@
 
 date_default_timezone_set('Africa/Nairobi');
 include 'includes/config.php';
-// payment_reason, meeting_priority, payment_date, patient_email, payment_status, paid_amount, doctors_email, confirmation_code
-// Errors
+
 $reasonErr = $meeting_priorityErr = $payment_dateErr = $reasonErr1 = $patient_emailErr = $payment_statusErr =$payment_phoneErr = $paid_amountErr = $doctors_emailErr = $confirmation_codeErr  = '';
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-
 	if(isset($_POST['approve_payment'])){
 		if (empty($_POST['payment_reason'])){
 			$reasonErr = 'Reason of payment cannot be empty';
@@ -122,7 +120,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	{
 		try{
 			$orderNo = strtoupper(uniqid());
-
 			$query = $conn -> prepare("SELECT CheckoutRequestID FROM santiorders");
 					$query->execute();
 					$resulting = $query -> fetch(PDO::FETCH_ASSOC);
@@ -148,7 +145,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 					}
 				}
 		}catch (PDOException $e){
-			$reasonErr1 = 'Internal server error';
+			$reasonErr1 = 'Internal server error.';
 		}
 	}
 }

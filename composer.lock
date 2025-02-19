@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2ea786f1757baab9edcbb3a67e470ce8",
+    "content-hash": "1aa4036390cd32cb5900099d2fa45495",
     "packages": [
         {
             "name": "firebase/php-jwt",
@@ -393,6 +393,51 @@
                 }
             ],
             "time": "2023-12-03T20:05:35+00:00"
+        },
+        {
+            "name": "intasend/intasend-php",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/IntaSend/intasend-php.git",
+                "reference": "a8a9d43158ea444b7aacb46fca68862a97ae4f3d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/IntaSend/intasend-php/zipball/a8a9d43158ea444b7aacb46fca68862a97ae4f3d",
+                "reference": "a8a9d43158ea444b7aacb46fca68862a97ae4f3d",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.0",
+                "php": ">=7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "IntaSend\\IntaSendPHP\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kishan",
+                    "email": "kishanmnpatel@gmail.com"
+                },
+                {
+                    "name": "Felix CHERUIYOT",
+                    "email": "felix@intasend.com"
+                }
+            ],
+            "description": "The official PHP SDK for IntaSend Payment Gateway",
+            "support": {
+                "issues": "https://github.com/IntaSend/intasend-php/issues",
+                "source": "https://github.com/IntaSend/intasend-php/tree/v1.1.1"
+            },
+            "time": "2024-05-30T07:39:14+00:00"
         },
         {
             "name": "league/oauth2-client",
@@ -870,10 +915,10 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
+    "platform": {},
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

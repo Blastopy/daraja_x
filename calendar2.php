@@ -53,8 +53,8 @@ if (empty($_SESSION['email']) && empty($_COOKIE['fname']) && empty($_COOKIE['sna
 	$dateErr = $returnFeedback = '';
 	// Ensure you confirm the data retrieved from the database
 	$patient_number = "0716065893";
-	$doc_email = "ronnie@gmail.com";
-	$patient_name = ucfirst($_COOKIE['fname']).' '.ucfirst($_COOKIE['sname']);
+	$doc_email = "afraxshitote@gmail.com";
+	$patient_name = ucfirst($firstname).' '.ucfirst($secondname);
 	$confirmation = "Online booking";
 function test_inputs($data){
 	$data = trim($data);
