@@ -1,0 +1,9 @@
+2025-04-20 10:54:38 -  MerchantRequestID: 5b3d-4c11-9598-abb6c87b02ec260863 -  CheckoutRequestID: ws_CO_20042025115416197716065893 -  ResultCode: 1032 -  ResultDesc: Request cancelled by user
+2025-04-20 10:59:14 -  MerchantRequestID: 5b3d-4c11-9598-abb6c87b02ec261020 -  CheckoutRequestID: ws_CO_20042025115904610716065893 -  ResultCode: 1032 -  ResultDesc: Request cancelled by user
+2025-04-20 11:12:49 -  MerchantRequestID: bbe5-4768-b180-ecc931696af021537 -  CheckoutRequestID: ws_CO_20042025121403808716065893 -  ResultCode: 2001 -  ResultDesc: The initiator information is invalid.
+2025-04-21 00:40:35 -  MerchantRequestID: 5b3d-4c11-9598-abb6c87b02ec282450 -  CheckoutRequestID: ws_CO_21042025014023270716065893 -  ResultCode: 1032 -  ResultDesc: Request cancelled by user
+2025-04-21 00:42:44 -  MerchantRequestID: bbe5-4768-b180-ecc931696af039819 -  CheckoutRequestID: ws_CO_21042025014234594716065893 -  ResultCode: 1032 -  ResultDesc: Request cancelled by user
+2025-04-21 00:43:28 -  MerchantRequestID: bbe5-4768-b180-ecc931696af039822 -  CheckoutRequestID: ws_CO_21042025014311362716065893 -  ResultCode: 0 -  ResultDesc: The service request is processed successfully.
+2025-04-21 00:45:10 -  MerchantRequestID: d34b-48dd-8f52-741ae4f15581251672 -  CheckoutRequestID: ws_CO_21042025014646281716065893 -  ResultCode: 1032 -  ResultDesc: Request cancelled by user
+2025-04-21 00:49:08 -  MerchantRequestID: bbe5-4768-b180-ecc931696af039940 -  CheckoutRequestID: ws_CO_21042025015043306716065893 -  ResultCode: 1032 -  ResultDesc: Request cancelled by user
+2025-04-21 09:54:01 -  MerchantRequestID: bbe5-4768-b180-ecc931696af053384 -  CheckoutRequestID: ws_CO_21042025105533903716065893 -  ResultCode: 1032 -  ResultDesc: Request cancelled by user
